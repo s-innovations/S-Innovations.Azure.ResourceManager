@@ -1,0 +1,15 @@
+{
+  "apiVersion": "2014-04-01",
+  "name": "[concat(parameters('hostingPlanName'),'-autoscale']",
+  "type": "Microsoft.Insights/autoscalesettings",
+  "location": "East US",
+  "tags": {
+    "displayName": "AutoScaleSettings"
+  },
+  "properties": {
+    "profiles": [ ],
+    "enabled": false,
+    "name": "[concat(parameters('hostingPlanName'),'-autoscale']",
+    "targetResourceUri": "[concat(resourceGroup().id, '/providers/Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]"
+  }
+}

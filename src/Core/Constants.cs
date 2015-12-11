@@ -8,9 +8,25 @@ namespace SInnovations.Azure.ResourceManager
 {
     public static class Constants
     {
-        public static class TemplateNames
+        public static class Templates
         {
-            public const string AzureKeyVault = "S-Innovations.Azure.ResourceManager.Templates.keyvault.json";
+            public const string TemplatePrefix = "SInnovations.Azure.ResourceManager.Templates.";
+            public const string AzureKeyVault = TemplatePrefix + "keyvault.json";
+
+            public static class Resources
+            {
+                public const string ResourcePrefix = "Resources.";
+                public const string ServerFarms = TemplatePrefix + ResourcePrefix + "serverfarms.json";
+                public const string AutoScale = TemplatePrefix + ResourcePrefix + "autoscale.json";
+                public const string AutoScaleProfileMetricTrigger = TemplatePrefix + ResourcePrefix + "AutoScale.metricTrigger.json";
+                public const string AutoScaleProfile = TemplatePrefix + ResourcePrefix + "AutoScale.profile.json";
+            }
+            public static class Parameters
+            {
+                public const string ParametersPrefix = "Parameters.";
+                public const string ServerFarms = TemplatePrefix + ParametersPrefix + "serverfarms.json";
+            }
+
         }
     }
 }

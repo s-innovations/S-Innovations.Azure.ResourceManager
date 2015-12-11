@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -12,22 +13,29 @@ using Microsoft.IdentityModel.Clients.ActiveDirectory;
 using Microsoft.Rest;
 using Microsoft.Rest.Azure.OData;
 using Newtonsoft.Json;
+
 using Newtonsoft.Json.Linq;
 
 namespace SInnovations.Azure.ResourceManager
 {
+
+   
+
+    
     public class ResourceManagerHelper
     {
 
         public static JObject CreateValue(string value)
         {
+
             return new JObject(new JProperty("value", value));
         }
         public static JProperty CreateValue(string key, JToken value)
         {
             return new JProperty(key, new JObject(new JProperty("value", value)));
         }
-     
+
+
         public static AuthenticationResult GetAuthorizationHeader(string tenant, string clientId, string secret, string redirectUrl = null)
         {
             if (!string.IsNullOrEmpty(secret))
@@ -85,16 +93,7 @@ namespace SInnovations.Azure.ResourceManager
             }
 
         }
-        private static JObject ReadData(string resourceName)
-        {
-            var assembly = typeof(ResourceManagerHelper).Assembly;
-            using (Stream stream = assembly.GetManifestResourceStream(resourceName))
-            using (StreamReader reader = new StreamReader(stream))
-            using (var jsonReader = new JsonTextReader(reader))
-            {
-                return JObject.Load(jsonReader);
-            }
-        }
+       
         public static Stream Read(string name)
         {
             return typeof(ResourceManagerHelper).Assembly.GetManifestResourceStream(name);
@@ -103,9 +102,59 @@ namespace SInnovations.Azure.ResourceManager
         {
             return LoadTemplates(new[] { templatePath }, parameterPath, variablePath, parameterNames);
         }
+
+
+
+
+        public static JObject CreateTemplate(ResourceSourceCollection resources, ResourceSourceCollection parameterPath, ResourceSourceCollection variablePath)
+        {
+            var template = new JObject(
+                new JProperty("$schema", "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#"),
+                new JProperty("contentVersion", "1.0.0.0"),
+                new JProperty("resources", new JArray(
+                    resources.Select(r => TemplateHelper.ReadData(r)))
+                ));
+
+            var parameterNames = Regex.Matches(template.ToString(), @"parameters\('(.*?)'\)").Cast<Match>().Where(k => k.Success).Select(k => k.Groups[1].Value).ToList();
+            var variableNames = Regex.Matches(template.ToString(), @"variables\('(.*?)'\)").Cast<Match>().Where(k => k.Success).Select(k => k.Groups[1].Value).ToList();
+
+
+            var parameters = new JObject(parameterPath.SelectMany(p => TemplateHelper.ReadData(p).Properties()));
+            var variables = new JObject(variablePath.SelectMany(p => TemplateHelper.ReadData(p).Properties()));
+
+            var paramterList = parameters.Properties().Where(p => parameterNames.Contains(p.Name)).ToList();
+            var variableList = variables.Properties().Where(p => variableNames.Contains(p.Name)).ToList();
+
+
+
+
+            var newEntries = false;
+            do
+            {
+                var variableJson = new JObject(variableList).ToString();
+                string[] parameterNamesUpdated = Regex.Matches(variableJson, @"parameters\('(.*?)'\)").Cast<Match>().Where(k => k.Success).Select(k => k.Groups[1].Value).Except(paramterList.Select(p => p.Name)).ToArray();
+                string[] variableNamesUpdated = Regex.Matches(variableJson, @"variables\('(.*?)'\)").Cast<Match>().Where(k => k.Success).Select(k => k.Groups[1].Value).Except(variableList.Select(p => p.Name)).ToArray();
+
+                newEntries = variableNamesUpdated.Length > 0 || parameterNamesUpdated.Length > 0;
+                if (newEntries)
+                {
+                    paramterList.AddRange(parameters.Properties().Where(p => parameterNamesUpdated.Contains(p.Name)));
+                    variableList.AddRange(variables.Properties().Where(p => variableNamesUpdated.Contains(p.Name)));
+                }
+
+            } while (newEntries);
+            //string[] variableNames = Regex.Matches(template.ToString(), @"variables\('(.*?)'\)").Cast<Match>().Where(k => k.Success).Select(k => k.Groups[1].Value).ToArray();
+
+            template["parameters"] = new JObject(paramterList);
+            template["variables"] = new JObject(variableList);
+
+
+            return template;
+        }
+
         public static string LoadTemplates(string[] templatePaths, string parameterPath, string variablePath, params string[] parameterNames)
         {
-            var templates = templatePaths.Select(templatePath => ReadData(templatePath)).ToArray();
+            var templates = templatePaths.Select(templatePath => TemplateHelper.ReadData(templatePath)).ToArray();
             var template = templates.First();
             if (templates.Skip(1).Any())
             {
@@ -118,8 +167,8 @@ namespace SInnovations.Azure.ResourceManager
                 }
             }
 
-            var parameters = ReadData(parameterPath);
-            var variables = ReadData(variablePath);
+            var parameters = TemplateHelper.ReadData(parameterPath);
+            var variables = TemplateHelper.ReadData(variablePath);
             template["parameters"] = new JObject(parameters.Properties().Where(p => parameterNames.Contains(p.Name)));
 
             var varProps = variables.Properties().Where(CreateFilter(parameterNames, "parameters")).ToArray();
@@ -144,13 +193,13 @@ namespace SInnovations.Azure.ResourceManager
                         foreach (Match match in matches)
                         {
                             var paramName = match.Groups[1].Value.Trim('\'', '"');
-                            if (!parameterNames.Contains(paramName))
-                                return false;
+                            if (parameterNames.Contains(paramName))
+                                return true;
 
                         }
                     }
                 }
-                return true;
+                return false;
             };
         }
         public async static Task<ResourceGroup[]> ListResourceGroups(string subscriptionId, string token)
@@ -202,34 +251,34 @@ namespace SInnovations.Azure.ResourceManager
 
             }
         }
-        
 
-        public async static Task<DeploymentExtended> CreateTemplateDeploymentAsync(string subscriptionId, string token, string resourceGroup, string deploymentName, string template, string parameters, bool waitForDeployment = true)
+
+        public async static Task<DeploymentExtended> CreateTemplateDeploymentAsync(ApplicationCredentials credentials, string resourceGroup, string deploymentName, JObject template, JObject parameters, bool waitForDeployment = true)
         {
 
-            var hash = TemplateHelper.CalculateMD5Hash(template + parameters);
+            var hash = TemplateHelper.CalculateMD5Hash(template.ToString() + parameters.ToString());
             var deployment = new Deployment();
 
             deployment.Properties = new DeploymentProperties
             {
                 Mode = DeploymentMode.Incremental,
-                Template = JObject.Parse(template),
-                Parameters = JObject.Parse(parameters)
+                Template = template,
+                Parameters = parameters
             };
-            using (var templateDeploymentClient = new ResourceManagementClient(new TokenCredentials(token)))
+            using (var templateDeploymentClient = new ResourceManagementClient(new TokenCredentials(credentials.AccessToken)))
             {
-                templateDeploymentClient.SubscriptionId = subscriptionId;
+                templateDeploymentClient.SubscriptionId = credentials.SubscriptionId;
 
                 var rg = await templateDeploymentClient.ResourceGroups.GetAsync(resourceGroup);
-                if (!(rg.Tags.ContainsKey(deploymentName) && rg.Tags[deploymentName] == hash && ((await templateDeploymentClient.Deployments.CheckExistenceAsync(resourceGroup, deploymentName)) ?? false)))
+                if (!(rg.Tags != null && rg.Tags.ContainsKey(deploymentName) && rg.Tags[deploymentName] == hash && ((await templateDeploymentClient.Deployments.CheckExistenceAsync(resourceGroup, deploymentName)) ?? false)))
                 {
 
 
 
                     var result = await templateDeploymentClient.Deployments.ValidateAsync(resourceGroup, deploymentName, deployment);
 
-
-
+                    if (result.Error != null)
+                        throw new Exception(result.Error.Message);
                     var deploymentResult = await templateDeploymentClient.Deployments.CreateOrUpdateAsync(resourceGroup,
                         deploymentName, deployment);
 
@@ -245,6 +294,7 @@ namespace SInnovations.Azure.ResourceManager
                     }
 
                     return deploymentResult;
+
                 }
                 else {
 

@@ -12,17 +12,25 @@ namespace SInnovations.Azure.ResourceManager
 {
     public static class TemplateHelper
     {
-
-        public static JObject ReadData(string resourceName)
+        public static JObject ReadData(ResourceSource resourceName)
         {
-            var assembly = typeof(TemplateHelper).Assembly;
-            using (Stream stream = assembly.GetManifestResourceStream(resourceName))
+
+            using (Stream stream = resourceName.Assembly.GetManifestResourceStream(resourceName.Path))
             using (StreamReader reader = new StreamReader(stream))
             using (var jsonReader = new JsonTextReader(reader))
             {
-                return JObject.Load(jsonReader);
+                var obj= JObject.Load(jsonReader);
+         
+                if (resourceName is IAfterLoadActions)
+                {
+                    ((IAfterLoadActions)resourceName).ApplyAfterLoadActions(obj);
+                }
+                foreach (var action in resourceName)
+                    action.TemplateAction(obj);
+                return obj;
             }
         }
+      
 
         public static string CalculateMD5Hash(string input)
         {

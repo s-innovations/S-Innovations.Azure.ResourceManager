@@ -1,0 +1,39 @@
+{
+  "hostingPlanName": {
+    "type": "string",
+    "metadata": {
+      "description": "The name of the App Service plan to use for hosting the web app."
+    }
+  },
+  "hostingPlanLocation": {
+    "type": "string",
+    "metadata": {
+      "description": "The location to use for creating the web app and hosting plan."
+    }
+  },
+  "hostingPlanSku": {
+    "type": "string",
+    "allowedValues": [
+      "Free",
+      "Shared",
+      "Basic",
+      "Standard"
+    ],
+    "defaultValue": "Free",
+    "metadata": {
+      "description": "The pricing tier for the hosting plan."
+    }
+  },
+  "hostingPlanWorkerSize": {
+    "allowedValues": [
+      "0",
+      "1",
+      "2"
+    ],
+    "defaultValue": "0",
+    "metadata": {
+      "description": "The instance size of the hosting plan (small, medium, or large)."
+    },
+    "type": "string"
+  }
+}

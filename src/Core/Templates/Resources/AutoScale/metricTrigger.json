@@ -1,0 +1,18 @@
+{
+  "metricTrigger": {
+    "metricName": "CpuPercentage",
+    "metricResourceUri": "[concat(resourceGroup().id, '/providers/Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]",
+    "timeGrain": "PT1M",
+    "statistic": "Average",
+    "timeWindow": "PT10M",
+    "timeAggregation": "Average",
+    "operator": "GreaterThan",
+    "threshold": "[parameters('threshold')]"
+  },
+  "scaleAction": {
+    "direction": "[parameters('direction')]",
+    "type": "ChangeCount",
+    "value": 1,
+    "cooldown": "PT10M"
+  }
+}

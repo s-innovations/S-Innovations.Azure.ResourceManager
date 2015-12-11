@@ -1,0 +1,12 @@
+{
+  "apiVersion": "2014-06-01",
+  "name": "[parameters('hostingPlanName')]",
+  "type": "Microsoft.Web/serverfarms",
+  "location": "[parameters('hostingPlanLocation')]",
+  "properties": {
+    "name": "[parameters('hostingPlanName')]",
+    "sku": "[parameters('hostingPlanSku')]",
+    "workerSize": "[parameters('hostingPlanWorkerSize')]",
+    "numberOfWorkers": 1
+  }
+}
