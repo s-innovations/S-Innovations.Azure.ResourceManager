@@ -95,6 +95,8 @@
     <EmbeddedResource Include="Templates\Resources\autoscale.json" />
     <EmbeddedResource Include="Templates\Resources\AutoScale\metricTrigger.json" />
     <EmbeddedResource Include="Templates\Resources\AutoScale\profile.json" />
+    <EmbeddedResource Include="Templates\Resources\LogicApps\workflows.json" />
+    <EmbeddedResource Include="Templates\Parameters\LogicApps\workflows.json" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

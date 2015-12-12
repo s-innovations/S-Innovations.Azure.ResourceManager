@@ -26,11 +26,16 @@ namespace SInnovations.Azure.ResourceManager.Tests
                             new JsonPathSetter("capacity.default", 1),
                             new AutoScaleProfileMetricTrigger {
                                 new ResourceParamterConstant("threshold",80),
-                                new ResourceParamterConstant("direction","Increase")
+                                new ResourceParamterConstant("direction","Increase"),
+                                 new JsonPathSetter("metricTrigger.operator","GreaterThan"),
+                                   new JsonPathSetter("metricTrigger.timeWindow", XmlConvert.ToString(TimeSpan.FromMinutes(10))),
+                                 new JsonPathSetter("scaleAction.cooldown", XmlConvert.ToString(TimeSpan.FromMinutes(10))),
                                 },
                             new AutoScaleProfileMetricTrigger {
                                  new ResourceParamterConstant("threshold",60),
                                  new ResourceParamterConstant("direction","Decrease"),
+                                 new JsonPathSetter("metricTrigger.operator","LessThan"),
+                                 new JsonPathSetter("metricTrigger.timeWindow", XmlConvert.ToString(TimeSpan.FromHours(1))),
                                  new JsonPathSetter("scaleAction.cooldown", XmlConvert.ToString(TimeSpan.FromHours(1))),
                             }
                         }

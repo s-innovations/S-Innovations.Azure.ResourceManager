@@ -253,7 +253,7 @@ namespace SInnovations.Azure.ResourceManager
         }
 
 
-        public async static Task<DeploymentExtended> CreateTemplateDeploymentAsync(ApplicationCredentials credentials, string resourceGroup, string deploymentName, JObject template, JObject parameters, bool waitForDeployment = true)
+        public async static Task<DeploymentExtended> CreateTemplateDeploymentAsync(ApplicationCredentials credentials, string resourceGroup, string deploymentName, JObject template, JObject parameters, bool waitForDeployment = true, DeploymentMode mode = DeploymentMode.Incremental)
         {
 
             var hash = TemplateHelper.CalculateMD5Hash(template.ToString() + parameters.ToString());
@@ -261,7 +261,7 @@ namespace SInnovations.Azure.ResourceManager
 
             deployment.Properties = new DeploymentProperties
             {
-                Mode = DeploymentMode.Incremental,
+                Mode = mode,
                 Template = template,
                 Parameters = parameters
             };
@@ -270,7 +270,10 @@ namespace SInnovations.Azure.ResourceManager
                 templateDeploymentClient.SubscriptionId = credentials.SubscriptionId;
 
                 var rg = await templateDeploymentClient.ResourceGroups.GetAsync(resourceGroup);
-                if (!(rg.Tags != null && rg.Tags.ContainsKey(deploymentName) && rg.Tags[deploymentName] == hash && ((await templateDeploymentClient.Deployments.CheckExistenceAsync(resourceGroup, deploymentName)) ?? false)))
+                if (rg.Tags == null)
+                    rg.Tags = new Dictionary<string, string>();
+
+                if (!(rg.Tags.ContainsKey(deploymentName) && rg.Tags[deploymentName] == hash && ((await templateDeploymentClient.Deployments.CheckExistenceAsync(resourceGroup, deploymentName)) ?? false)))
                 {
 
 
@@ -282,7 +285,7 @@ namespace SInnovations.Azure.ResourceManager
                     var deploymentResult = await templateDeploymentClient.Deployments.CreateOrUpdateAsync(resourceGroup,
                         deploymentName, deployment);
 
-                    rg.Tags.Add(deploymentName, hash);
+                    rg.Tags[deploymentName] = hash;
                     await templateDeploymentClient.ResourceGroups.CreateOrUpdateAsync(resourceGroup, rg);
 
                     while (waitForDeployment && !(deploymentResult.Properties.ProvisioningState == "Failed" || deploymentResult.Properties.ProvisioningState == "Succeeded"))

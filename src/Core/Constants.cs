@@ -20,11 +20,13 @@ namespace SInnovations.Azure.ResourceManager
                 public const string AutoScale = TemplatePrefix + ResourcePrefix + "autoscale.json";
                 public const string AutoScaleProfileMetricTrigger = TemplatePrefix + ResourcePrefix + "AutoScale.metricTrigger.json";
                 public const string AutoScaleProfile = TemplatePrefix + ResourcePrefix + "AutoScale.profile.json";
+                public const string LogicApp = TemplatePrefix + ResourcePrefix + "LogicApps.workflows.json";
             }
             public static class Parameters
             {
                 public const string ParametersPrefix = "Parameters.";
                 public const string ServerFarms = TemplatePrefix + ParametersPrefix + "serverfarms.json";
+                public const string LogicApp = TemplatePrefix + ParametersPrefix + "LogicApps.workflows.json";
             }
 
         }

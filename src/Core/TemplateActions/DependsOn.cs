@@ -59,9 +59,9 @@ namespace SInnovations.Azure.ResourceManager.TemplateActions
 
         internal void AddToDependOn()
         {
-            var token = obj["dependOn"] as JArray;
+            var token = obj["dependsOn"] as JArray;
             if (token == null)
-                obj["dependOn"] = token = new JArray();
+                obj["dependsOn"] = token = new JArray();
 
             token.Add(dependsOnRef.obj.SelectToken("name"));
 

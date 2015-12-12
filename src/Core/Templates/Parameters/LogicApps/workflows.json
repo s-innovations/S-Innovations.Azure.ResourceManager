@@ -1,0 +1,8 @@
+{
+  "logicAppName": {
+    "type": "string",
+    "metadata": {
+      "description": "The name of the logic app to create."
+    }
+  }
+}

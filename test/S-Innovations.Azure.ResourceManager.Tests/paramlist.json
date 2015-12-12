@@ -71,5 +71,11 @@
     "type": "string",
     "defaultValue": "Standard_A0",
     "minLength": 1
+  },
+  "logicAppName": {
+    "type": "string",
+    "metadata": {
+      "description": "The name of the logic app to create."
+    }
   }
 }
