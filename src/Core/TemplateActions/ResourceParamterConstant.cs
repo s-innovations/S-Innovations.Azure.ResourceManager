@@ -9,17 +9,17 @@ namespace SInnovations.Azure.ResourceManager.TemplateActions
 {
     public class JsonPathSetter : ITemplateAction
     {
-        private string path;
+        public string Path { get; set; }
         private JToken value;
         public JsonPathSetter(string path, JToken value)
         {
-            this.path = path;
+            this.Path = path;
             this.value = value;
         }
 
-        public void TemplateAction(JObject obj)
+        public async Task TemplateActionAsync(JObject obj)
         {
-            (obj.SelectToken(path).Parent as JProperty).Value = value;
+            (obj.SelectToken(Path).Parent as JProperty).Value = value;
         }
     }
     public class ResourceParamterConstant : ITemplateAction
@@ -31,12 +31,13 @@ namespace SInnovations.Azure.ResourceManager.TemplateActions
             this.parameterName = parameterName;
             this.value = value;
         }
-        public void TemplateAction(JObject obj)
+        public Task TemplateActionAsync(JObject obj)
         {
             foreach (var prop in obj.Properties())
             {
                 ReplaceValue(prop.Value);
             }
+            return Task.FromResult(0);
         }
         private void ReplaceValue(JToken token)
         {
@@ -49,7 +50,7 @@ namespace SInnovations.Azure.ResourceManager.TemplateActions
             }
             else if (token.Type == JTokenType.Object)
             {
-                TemplateAction(token as JObject);
+                TemplateActionAsync(token as JObject).Wait();
             }
             else if (token.Type == JTokenType.String)
             {

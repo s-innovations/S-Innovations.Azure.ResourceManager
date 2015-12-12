@@ -16,7 +16,7 @@ namespace SInnovations.Azure.ResourceManager.Tests
         {
             ResourceSource serverFarm = Constants.Templates.Resources.ServerFarms;
 
-            var serverFarms = ResourceManagerHelper.CreateTemplate(
+            var serverFarms = await ResourceManagerHelper.CreateTemplateAsync(
                 new[]{
                     serverFarm,
                     new AutoScale {

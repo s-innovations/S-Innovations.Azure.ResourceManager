@@ -18,13 +18,15 @@ namespace SInnovations.Azure.ResourceManager.Templates.Resources
         }
        
 
-        public void ApplyAfterLoadActions(JObject obj)
+        public async Task<JObject> ApplyAfterLoadActionsAsync(JObject obj)
         {
             JArray profilesArray = obj.SelectToken("properties.profiles") as JArray;
             profilesArray.Clear();
 
-            foreach (var profile in this.Select(TemplateHelper.ReadData))
+            foreach (var profile in await Task.WhenAll(this.Select(TemplateHelper.ReadDataAsync)))
                 profilesArray.Add(profile);
+
+            return obj;
         }
     }
 

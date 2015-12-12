@@ -1,11 +1,8 @@
 {
   "type": "Microsoft.Logic/workflows",
   "apiVersion": "2015-02-01-preview",
-  "name": "[concat(parameters('logicAppName'),uniqueString(resourceGroup().id, deployment().name))]",
+  "name": "[parameters('logicAppName')]",
   "location": "[parameters('hostingPlanLocation')]",
-  "dependsOn": [
-    "[resourceId('Microsoft.Web/serverfarms', parameters('hostingPlanName'))]"
-  ],
   "properties": {
     "sku": {
       "name": "[parameters('hostingPlanSku')]",
@@ -18,7 +15,7 @@
       "contentVersion": "1.0.0.0",
       "parameters": { },
       "triggers": {
-        "http2": {
+        "http": {
           "type": "Http",
           "inputs": {
             "method": "PUT",
@@ -27,17 +24,6 @@
           "recurrence": {
             "frequency": "Hour",
             "interval": 2
-          }
-        },
-        "http1": {
-          "type": "Http",
-          "inputs": {
-            "method": "PUT",
-            "uri": "http://requestb.in/18z7v7w1"
-          },
-          "recurrence": {
-            "frequency": "Hour",
-            "interval": 4
           }
         }
       },

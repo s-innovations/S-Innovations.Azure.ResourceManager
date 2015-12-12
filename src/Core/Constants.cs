@@ -21,6 +21,7 @@ namespace SInnovations.Azure.ResourceManager
                 public const string AutoScaleProfileMetricTrigger = TemplatePrefix + ResourcePrefix + "AutoScale.metricTrigger.json";
                 public const string AutoScaleProfile = TemplatePrefix + ResourcePrefix + "AutoScale.profile.json";
                 public const string LogicApp = TemplatePrefix + ResourcePrefix + "LogicApps.workflows.json";
+                public const string LogicAppHttpTrigger = TemplatePrefix + ResourcePrefix + "LogicApps.httpTrigger.json";
             }
             public static class Parameters
             {
@@ -28,7 +29,11 @@ namespace SInnovations.Azure.ResourceManager
                 public const string ServerFarms = TemplatePrefix + ParametersPrefix + "serverfarms.json";
                 public const string LogicApp = TemplatePrefix + ParametersPrefix + "LogicApps.workflows.json";
             }
-
+            public static class Outputs
+            {
+                public const string OutputsPrefix = "Outputs.";
+                public const string ServerFarms = TemplatePrefix + OutputsPrefix + "serverfarms.json";
+            }
         }
     }
 }

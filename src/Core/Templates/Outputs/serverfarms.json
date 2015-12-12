@@ -1,0 +1,6 @@
+{
+  "serverFarmId": {
+    "type": "string",
+    "value": "[resourceId('Microsoft.Web/serverfarms', parameters('hostingPlanName'))]"
+  }
+}

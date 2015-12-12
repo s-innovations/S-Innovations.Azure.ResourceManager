@@ -1,0 +1,11 @@
+{
+  "type": "Http",
+  "inputs": {
+    "method": "PUT",
+    "uri": ""
+  },
+  "recurrence": {
+    "frequency": "Hour",
+    "interval": 2
+  }
+}

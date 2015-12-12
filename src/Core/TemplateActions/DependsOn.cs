@@ -18,7 +18,7 @@ namespace SInnovations.Azure.ResourceManager.TemplateActions
         }
 
         
-        public void TemplateAction(JObject obj)
+        public async Task TemplateActionAsync(JObject obj)
         {
             dependsOn.counter++;
             this.obj = obj;
@@ -37,20 +37,43 @@ namespace SInnovations.Azure.ResourceManager.TemplateActions
     {
         private DependsOnRef dependsOnRef;
         private JObject obj;
+        private string deploymentName;
+        private string outputName;
+        private string resourceGroup;
+        private ApplicationCredentials options;
+
         internal int counter = 0;
         public DependsOn(ResourceSource other)
         {
             other.Add(dependsOnRef = new DependsOnRef(this));
         }
 
-        public void TemplateAction(JObject obj)
+        public DependsOn(ApplicationCredentials options, string resourceGroup, string deploymentName, string outputName)
+        {
+            this.deploymentName = deploymentName;
+            this.outputName = outputName;
+            this.resourceGroup = resourceGroup;
+            this.options = options;
+        }
+
+        public async Task TemplateActionAsync(JObject obj)
         {
             counter++;
             this.obj = obj;
 
             if (counter >= 2)
                 AddToDependOn();
-           
+
+            if (!string.IsNullOrEmpty(deploymentName))
+            {
+                var output = await ResourceManagerHelper.GetTemplateDeploymentOutputAsync(options, resourceGroup, deploymentName);
+                var token = obj["dependsOn"] as JArray;
+                if (token == null)
+                    obj["dependsOn"] = token = new JArray();
+
+                token.Add(output[outputName]["value"]);
+                
+            }
 
              
 

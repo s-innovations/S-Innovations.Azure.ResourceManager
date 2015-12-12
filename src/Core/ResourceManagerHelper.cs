@@ -61,9 +61,16 @@ namespace SInnovations.Azure.ResourceManager
             }
         }
 
-        public static AuthenticationResult GetAuthorizationHeader(ApplicationCredentials options)
+        public static void SetAuthorizationOptions(ApplicationCredentials options)
         {
-            return GetAuthorizationHeader(options.TenantId, options.CliendId, options.Secret, options.ReplyUrl);
+            var token = GetAuthorizationHeader(options.TenantId, options.CliendId, options.Secret, options.ReplyUrl);
+
+            options.AccessToken = token.AccessToken;
+            options.RefreshToken = token.RefreshToken;
+            options.TenantId = token.TenantId;
+            options.ObjectId = token.UserInfo?.UniqueId;
+
+        
         }
 
         public static string test(string clientId, string redirectUri, string tenant = null)
@@ -76,6 +83,19 @@ namespace SInnovations.Azure.ResourceManager
             var token = authContext.AcquireToken("https://management.core.windows.net/", clientId, new Uri(redirectUri), PromptBehavior.Auto, UserIdentifier.AnyUser);
 
             return token.AccessToken;
+        }
+
+        public static JObject CreateOutput(string v1, string v2, string v3)
+        {
+            return new JObject(
+                new JProperty(v1, 
+                    new JObject(
+                        new JProperty("type", v2),
+                        new JProperty("value", v3)
+                    )
+                )
+            );
+
         }
 
         public async static Task<Subscription[]> ListSubscriptions(string azureToken)
@@ -98,29 +118,32 @@ namespace SInnovations.Azure.ResourceManager
         {
             return typeof(ResourceManagerHelper).Assembly.GetManifestResourceStream(name);
         }
-        public static string LoadTemplate(string templatePath, string parameterPath, string variablePath, params string[] parameterNames)
+        public static Task<string> LoadTemplateAsync(string templatePath, string parameterPath, string variablePath, params string[] parameterNames)
         {
-            return LoadTemplates(new[] { templatePath }, parameterPath, variablePath, parameterNames);
+            return LoadTemplatesAsync(new[] { templatePath }, parameterPath, variablePath, parameterNames);
         }
 
 
 
 
-        public static JObject CreateTemplate(ResourceSourceCollection resources, ResourceSourceCollection parameterPath, ResourceSourceCollection variablePath)
+        public static async Task<JObject> CreateTemplateAsync(ResourceSourceCollection resources,
+            ResourceSourceCollection parameterPath, 
+            ResourceSourceCollection variablePath,
+            ResourceSourceCollection outputs = null)
         {
             var template = new JObject(
                 new JProperty("$schema", "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#"),
                 new JProperty("contentVersion", "1.0.0.0"),
                 new JProperty("resources", new JArray(
-                    resources.Select(r => TemplateHelper.ReadData(r)))
+                    await Task.WhenAll(resources.Select(r => TemplateHelper.ReadDataAsync(r))))
                 ));
 
             var parameterNames = Regex.Matches(template.ToString(), @"parameters\('(.*?)'\)").Cast<Match>().Where(k => k.Success).Select(k => k.Groups[1].Value).ToList();
             var variableNames = Regex.Matches(template.ToString(), @"variables\('(.*?)'\)").Cast<Match>().Where(k => k.Success).Select(k => k.Groups[1].Value).ToList();
 
 
-            var parameters = new JObject(parameterPath.SelectMany(p => TemplateHelper.ReadData(p).Properties()));
-            var variables = new JObject(variablePath.SelectMany(p => TemplateHelper.ReadData(p).Properties()));
+            var parameters = new JObject( (await Task.WhenAll(parameterPath.Select(p => TemplateHelper.ReadDataAsync(p)))).SelectMany(o=>o.Properties()) );
+            var variables = new JObject((await Task.WhenAll(variablePath.Select(p => TemplateHelper.ReadDataAsync(p)))).SelectMany(o => o.Properties()));
 
             var paramterList = parameters.Properties().Where(p => parameterNames.Contains(p.Name)).ToList();
             var variableList = variables.Properties().Where(p => variableNames.Contains(p.Name)).ToList();
@@ -148,13 +171,17 @@ namespace SInnovations.Azure.ResourceManager
             template["parameters"] = new JObject(paramterList);
             template["variables"] = new JObject(variableList);
 
+            if (outputs != null)
+                template["outputs"] = new JObject(
+                   (await Task.WhenAll(outputs.Select(r => TemplateHelper.ReadDataAsync(r)))).SelectMany(o=>o.Properties()));
+
 
             return template;
         }
 
-        public static string LoadTemplates(string[] templatePaths, string parameterPath, string variablePath, params string[] parameterNames)
+        public static async Task<string> LoadTemplatesAsync(string[] templatePaths, string parameterPath, string variablePath, params string[] parameterNames)
         {
-            var templates = templatePaths.Select(templatePath => TemplateHelper.ReadData(templatePath)).ToArray();
+            var templates = await Task.WhenAll(templatePaths.Select(templatePath => TemplateHelper.ReadDataAsync(templatePath)));
             var template = templates.First();
             if (templates.Skip(1).Any())
             {
@@ -167,8 +194,8 @@ namespace SInnovations.Azure.ResourceManager
                 }
             }
 
-            var parameters = TemplateHelper.ReadData(parameterPath);
-            var variables = TemplateHelper.ReadData(variablePath);
+            var parameters = await TemplateHelper.ReadDataAsync(parameterPath);
+            var variables = await TemplateHelper.ReadDataAsync(variablePath);
             template["parameters"] = new JObject(parameters.Properties().Where(p => parameterNames.Contains(p.Name)));
 
             var varProps = variables.Properties().Where(CreateFilter(parameterNames, "parameters")).ToArray();
@@ -252,8 +279,21 @@ namespace SInnovations.Azure.ResourceManager
             }
         }
 
+        public async static Task<JObject> GetTemplateDeploymentOutputAsync(ApplicationCredentials credentials,
+            string resourceGroup, string deploymentName)
+        {
+            using (var templateDeploymentClient = new ResourceManagementClient(new TokenCredentials(credentials.AccessToken)))
+            {
+                templateDeploymentClient.SubscriptionId = credentials.SubscriptionId;
+                var deploymentResultWrapper = await templateDeploymentClient.Deployments.GetAsync(resourceGroup, deploymentName);
+                return deploymentResultWrapper.Properties.Outputs as JObject;
+               
+            }
+        }
 
-        public async static Task<DeploymentExtended> CreateTemplateDeploymentAsync(ApplicationCredentials credentials, string resourceGroup, string deploymentName, JObject template, JObject parameters, bool waitForDeployment = true, DeploymentMode mode = DeploymentMode.Incremental)
+        public async static Task<DeploymentExtended> CreateTemplateDeploymentAsync(
+            ApplicationCredentials credentials, string resourceGroup, string deploymentName, 
+            JObject template, JObject parameters,  bool waitForDeployment = true, DeploymentMode mode = DeploymentMode.Incremental)
         {
 
             var hash = TemplateHelper.CalculateMD5Hash(template.ToString() + parameters.ToString());

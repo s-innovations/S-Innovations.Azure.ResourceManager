@@ -17,13 +17,15 @@ namespace SInnovations.Azure.ResourceManager.Templates.Resources
           
         }
 
-        public void ApplyAfterLoadActions(JObject obj)
+        public async Task<JObject> ApplyAfterLoadActionsAsync(JObject obj)
         {
             JArray rulesArray = obj.SelectToken("rules") as JArray;
             rulesArray.Clear();
 
-            foreach (var rule in this.Select(TemplateHelper.ReadData))
+            foreach (var rule in await Task.WhenAll(this.Select(TemplateHelper.ReadDataAsync)))
                 rulesArray.Add(rule);
+
+            return obj;
         }
 
     }

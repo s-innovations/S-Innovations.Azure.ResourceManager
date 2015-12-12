@@ -7,12 +7,13 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using SInnovations.Azure.ResourceManager.Templates.Resources.LogicApps;
 
 namespace SInnovations.Azure.ResourceManager
 {
     public static class TemplateHelper
     {
-        public static JObject ReadData(ResourceSource resourceName)
+        public static async Task<JObject> ReadDataAsync(ResourceSource resourceName)
         {
 
             using (Stream stream = resourceName.Assembly.GetManifestResourceStream(resourceName.Path))
@@ -20,13 +21,13 @@ namespace SInnovations.Azure.ResourceManager
             using (var jsonReader = new JsonTextReader(reader))
             {
                 var obj= JObject.Load(jsonReader);
-         
+                
                 if (resourceName is IAfterLoadActions)
                 {
-                    ((IAfterLoadActions)resourceName).ApplyAfterLoadActions(obj);
+                    obj = await ((IAfterLoadActions)resourceName).ApplyAfterLoadActionsAsync(obj);
                 }
                 foreach (var action in resourceName)
-                    action.TemplateAction(obj);
+                    await action.TemplateActionAsync(obj);
                 return obj;
             }
         }

@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SInnovations.Azure.ResourceManager</RootNamespace>
     <AssemblyName>S-Innovations.Azure.ResourceManager</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -31,7 +32,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Azure.ResourceManager, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Microsoft.Azure.Management.Resources.3.2.0-preview\lib\net45\Microsoft.Azure.ResourceManager.dll</HintPath>
+      <HintPath>..\..\packages\Microsoft.Azure.Management.Resources.3.3.0-preview\lib\net45\Microsoft.Azure.ResourceManager.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.IdentityModel.Clients.ActiveDirectory, Version=2.19.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -43,11 +44,11 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.Rest.ClientRuntime, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Microsoft.Rest.ClientRuntime.1.5.0\lib\net45\Microsoft.Rest.ClientRuntime.dll</HintPath>
+      <HintPath>..\..\packages\Microsoft.Rest.ClientRuntime.1.8.0\lib\net45\Microsoft.Rest.ClientRuntime.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.Rest.ClientRuntime.Azure, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Microsoft.Rest.ClientRuntime.Azure.2.2.0\lib\net45\Microsoft.Rest.ClientRuntime.Azure.dll</HintPath>
+      <HintPath>..\..\packages\Microsoft.Rest.ClientRuntime.Azure.2.5.1\lib\net45\Microsoft.Rest.ClientRuntime.Azure.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
@@ -86,10 +87,11 @@
     <Compile Include="Templates\Resources\AutoScale\AutoScale.cs" />
     <Compile Include="Templates\Resources\AutoScale\AutoScaleProfile.cs" />
     <Compile Include="Templates\Resources\AutoScale\AutoScaleProfileMetricTrigger.cs" />
+    <Compile Include="Templates\Resources\LogicApps\HttpTrigger.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <EmbeddedResource Include="Templates\keyvault.json" />
+    <EmbeddedResource Include="Templates\Resources\keyvault.json" />
     <EmbeddedResource Include="Templates\Resources\serverfarms.json" />
     <EmbeddedResource Include="Templates\Parameters\serverfarms.json" />
     <EmbeddedResource Include="Templates\Resources\autoscale.json" />
@@ -97,6 +99,9 @@
     <EmbeddedResource Include="Templates\Resources\AutoScale\profile.json" />
     <EmbeddedResource Include="Templates\Resources\LogicApps\workflows.json" />
     <EmbeddedResource Include="Templates\Parameters\LogicApps\workflows.json" />
+    <EmbeddedResource Include="Templates\Parameters\keyvault.json" />
+    <EmbeddedResource Include="Templates\Outputs\serverfarms.json" />
+    <EmbeddedResource Include="Templates\Resources\LogicApps\httpTrigger.json" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
