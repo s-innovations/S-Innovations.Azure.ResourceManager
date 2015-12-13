@@ -8,7 +8,7 @@ using Newtonsoft.Json.Linq;
 
 namespace SInnovations.Azure.ResourceManager.Templates.Resources
 {
-    public class AutoScaleProfile : ResourceSourceComposer, IAfterLoadActions
+    public class AutoScaleProfile : ResourceSource, IAfterLoadActions
     { 
      
 

@@ -10,7 +10,7 @@ namespace SInnovations.Azure.ResourceManager.Templates.Resources.LogicApps
 {
   
   
-    public class HttpTrigger : ResourceSourceComposer, IAfterLoadActions
+    public class HttpTrigger : ResourceSource, IAfterLoadActions
     {
         private string name;
 

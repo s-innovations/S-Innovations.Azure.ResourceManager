@@ -9,7 +9,7 @@ using Newtonsoft.Json.Linq;
 
 namespace SInnovations.Azure.ResourceManager.Templates.Resources
 {
-    public class AutoScale : ResourceSourceComposer, IAfterLoadActions
+    public class AutoScale : ResourceSource, IAfterLoadActions
     {
       
         public AutoScale() : base(Constants.Templates.Resources.AutoScale, typeof(AutoScale).Assembly)

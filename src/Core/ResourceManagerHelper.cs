@@ -67,10 +67,19 @@ namespace SInnovations.Azure.ResourceManager
 
             options.AccessToken = token.AccessToken;
             options.RefreshToken = token.RefreshToken;
-            options.TenantId = token.TenantId;
-            options.ObjectId = token.UserInfo?.UniqueId;
+            options.TenantId = token.TenantId ?? FindClaim(token.AccessToken,"tid"); 
+            options.ObjectId = token.UserInfo?.UniqueId ?? FindClaim(token.AccessToken, "oid"); 
+
 
         
+        }
+
+        private static string FindClaim(string accessToken,string claim)
+        {
+            var base64 = accessToken.Split('.')[1];
+            base64 = base64.PadRight(base64.Length + (4 - base64.Length % 4) % 4, '=');
+            var split = JObject.Parse(Encoding.UTF8.GetString(Convert.FromBase64String(base64)));
+            return split.SelectToken(claim).ToString();
         }
 
         public static string test(string clientId, string redirectUri, string tenant = null)
@@ -128,9 +137,12 @@ namespace SInnovations.Azure.ResourceManager
 
         public static async Task<JObject> CreateTemplateAsync(ResourceSourceCollection resources,
             ResourceSourceCollection parameterPath, 
-            ResourceSourceCollection variablePath,
+            ResourceSourceCollection variablePath = null,
             ResourceSourceCollection outputs = null)
         {
+            if (variablePath == null)
+                variablePath = new ResourceSourceCollection();
+
             var template = new JObject(
                 new JProperty("$schema", "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#"),
                 new JProperty("contentVersion", "1.0.0.0"),

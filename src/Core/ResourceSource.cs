@@ -18,9 +18,11 @@ namespace SInnovations.Azure.ResourceManager
     {
 
     }
-    public class ResourceSource : IEnumerable
+    public class ResourceSource : IEnumerable, IEnumerable<ResourceSource>
     {
         private List<ITemplateAction> _actions = new List<ITemplateAction>();
+        private ResourceSourceCollection childs = new ResourceSourceCollection();
+
         public ResourceSource()
         {
 
@@ -37,6 +39,10 @@ namespace SInnovations.Azure.ResourceManager
         public void Add(ITemplateAction action)
         {
             this._actions.Add(action);
+        }
+        public void Add(ResourceSource child)
+        {
+            childs.Add(child);
         }
         public string Path { get; set; }
         public Assembly Assembly { get; set; }
@@ -62,6 +68,11 @@ namespace SInnovations.Azure.ResourceManager
         IEnumerator IEnumerable.GetEnumerator()
         {
             return _actions.GetEnumerator();
+        }
+
+        IEnumerator<ResourceSource> IEnumerable<ResourceSource>.GetEnumerator()
+        {
+            return childs.GetEnumerator();
         }
     }
 }

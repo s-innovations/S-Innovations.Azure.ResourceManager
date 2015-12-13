@@ -1,0 +1,9 @@
+
+  {
+    "tenantId": "[parameters('tenantId')]",
+    "objectId": "[parameters('objectId')]",
+    "permissions": {
+      "keys": [ "all" ],
+      "secrets": [ "all" ]
+    }
+  }

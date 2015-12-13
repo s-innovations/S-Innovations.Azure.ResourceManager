@@ -13,23 +13,30 @@ namespace SInnovations.Azure.ResourceManager
 {
     public static class TemplateHelper
     {
-        public static async Task<JObject> ReadDataAsync(ResourceSource resourceName)
+        public static Task<JObject> ReadDataAsync(ResourceSource resourceName)
         {
+            if (string.IsNullOrEmpty(resourceName.Path))
+                return Load(resourceName, new JObject());
 
             using (Stream stream = resourceName.Assembly.GetManifestResourceStream(resourceName.Path))
             using (StreamReader reader = new StreamReader(stream))
             using (var jsonReader = new JsonTextReader(reader))
             {
                 var obj= JObject.Load(jsonReader);
-                
-                if (resourceName is IAfterLoadActions)
-                {
-                    obj = await ((IAfterLoadActions)resourceName).ApplyAfterLoadActionsAsync(obj);
-                }
-                foreach (var action in resourceName)
-                    await action.TemplateActionAsync(obj);
-                return obj;
+                return Load(resourceName, obj);
+               
             }
+        }
+        private static async Task<JObject> Load(ResourceSource resourceName, JObject obj)
+        {
+            if (resourceName is IAfterLoadActions)
+            {
+                obj = await((IAfterLoadActions)resourceName).ApplyAfterLoadActionsAsync(obj);
+            }
+            foreach (var action in resourceName)
+                await action.TemplateActionAsync(obj);
+
+            return obj;
         }
       
 

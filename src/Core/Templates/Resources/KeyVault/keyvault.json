@@ -1,0 +1,25 @@
+{
+  "type": "Microsoft.KeyVault/vaults",
+  "name": "[variables('keyVaultName')]",
+  "apiVersion": "2015-06-01",
+  "location": "[parameters('keyVaultLocation')]",
+  "properties": {
+    "enabledForDeployment": "[parameters('enableVaultForDeployment')]",
+    "enabledForDiskEncryption": "[parameters('enableVaultForDiskEncryption')]",
+    "tenantId": "[parameters('tenantId')]",
+    "accessPolicies": [
+      {
+        "tenantId": "[parameters('tenantId')]",
+        "objectId": "[parameters('objectId')]",
+        "permissions": {
+          "keys": [ "all" ],
+          "secrets": [ "all" ]
+        }
+      }
+    ],
+    "sku": {
+      "name": "[parameters('keyVaultSku')]",
+      "family": "A"
+    }
+  }
+}

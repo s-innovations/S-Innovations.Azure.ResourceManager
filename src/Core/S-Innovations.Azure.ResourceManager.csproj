@@ -56,6 +56,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core" />
     <Reference Include="System.Net" />
     <Reference Include="System.Net.Http.WebRequest" />
@@ -70,6 +71,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApplicationCredentials.cs" />
+    <Compile Include="Attributes\ResourceSourceLoaderExtensionAttribute.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="FileCache.cs" />
     <Compile Include="IAfterLoadActions.cs" />
@@ -83,15 +85,17 @@
     <Compile Include="TemplateActions\DependsOn.cs" />
     <Compile Include="TemplateActions\ResourceParameterReplacer.cs" />
     <Compile Include="TemplateActions\ResourceParamterConstant.cs" />
+    <Compile Include="TemplateActions\TemplateOutput.cs" />
     <Compile Include="TemplateHelper.cs" />
     <Compile Include="Templates\Resources\AutoScale\AutoScale.cs" />
     <Compile Include="Templates\Resources\AutoScale\AutoScaleProfile.cs" />
     <Compile Include="Templates\Resources\AutoScale\AutoScaleProfileMetricTrigger.cs" />
+    <Compile Include="Templates\Resources\KeyVault\KeyVault.cs" />
     <Compile Include="Templates\Resources\LogicApps\HttpTrigger.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <EmbeddedResource Include="Templates\Resources\keyvault.json" />
+    <EmbeddedResource Include="Templates\Resources\KeyVault\keyvault.json" />
     <EmbeddedResource Include="Templates\Resources\serverfarms.json" />
     <EmbeddedResource Include="Templates\Parameters\serverfarms.json" />
     <EmbeddedResource Include="Templates\Resources\autoscale.json" />
@@ -102,7 +106,10 @@
     <EmbeddedResource Include="Templates\Parameters\keyvault.json" />
     <EmbeddedResource Include="Templates\Outputs\serverfarms.json" />
     <EmbeddedResource Include="Templates\Resources\LogicApps\httpTrigger.json" />
+    <EmbeddedResource Include="Templates\Resources\KeyVault\accessPolicy.json" />
+    <None Include="Templates\Resources\Storage\storageAccount.json" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
