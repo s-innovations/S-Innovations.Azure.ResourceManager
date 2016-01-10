@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
 
 namespace SInnovations.Azure.ResourceManager
 {
@@ -33,6 +34,11 @@ namespace SInnovations.Azure.ResourceManager
             var rsc = new ResourceSourceCollection();
             rsc.AddRange(source.Select(s => (ResourceSource)s));
             return rsc;
+        }
+
+        public static implicit operator JObject(ResourceSourceCollection collection)
+        {
+            return new JObject(collection.SelectMany(s => ((JObject)s).Properties()));
         }
     }
 }

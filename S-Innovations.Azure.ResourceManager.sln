@@ -13,6 +13,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "S-Innovations.Azure.Resourc
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "S-Innovations.Azure.ResourceManager.ConsoleHelper", "src\ResourceManager.ConsoleHelper\S-Innovations.Azure.ResourceManager.ConsoleHelper.csproj", "{374BC8AB-D0E0-40B8-AB6D-725122D61859}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{618D4760-3DC4-4BBA-B80F-C84DAF31078D}"
+	ProjectSection(SolutionItems) = preProject
+		readme.md = readme.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

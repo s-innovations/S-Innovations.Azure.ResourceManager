@@ -22,14 +22,10 @@ namespace SInnovations.Azure.ResourceManager.Templates.Resources.LogicApps
 
         public async Task<JObject> ApplyAfterLoadActionsAsync(JObject obj)
         {
-         
-
             foreach(var pathSetters in this.Actions.OfType<JsonPathSetter>().Where(p=>!p.Path.StartsWith(name)))
                 pathSetters.Path = name +"."+ pathSetters.Path;
 
             return new JObject(new JProperty(name, obj));
         }
-
-       
     }
 }
