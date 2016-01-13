@@ -37,6 +37,11 @@ namespace SInnovations.Azure.ResourceManager
             {
                 public const string OutputsPrefix = "Outputs.";
                 public const string ServerFarms = TemplatePrefix + OutputsPrefix + "serverfarms.json";
+
+                public static class ServerFarm
+                {
+                    public const string AppServicePlanId = "serverFarmId";
+                }
             }
         }
     }
