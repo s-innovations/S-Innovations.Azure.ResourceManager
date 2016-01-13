@@ -31,6 +31,10 @@ namespace SInnovations.Azure.ResourceManager.ConsoleHelper
         [Option('s', "subscriptionid",
            HelpText = "The Azure Subscription Id to use")]
         public string SubscriptionId { get; set; }
+
+        [Option('a', "AccessToken",
+            HelpText = "The oauthToken to use for authorization")]
+        public string AccessToken { get; set; }
     }
 
     public class test
@@ -152,6 +156,7 @@ namespace SInnovations.Azure.ResourceManager.ConsoleHelper
             options.ReplyUrl = consoleOps.ReplyUrl;
             options.Secret = consoleOps.Secret;
             options.CliendId = consoleOps.CliendId;
+            options.AccessToken = consoleOps.AccessToken;
 
             return options;
         }
