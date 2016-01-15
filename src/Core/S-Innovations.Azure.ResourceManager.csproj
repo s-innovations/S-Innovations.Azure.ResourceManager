@@ -109,10 +109,9 @@
     <EmbeddedResource Include="Templates\Resources\LogicApps\httpTrigger.json" />
     <EmbeddedResource Include="Templates\Resources\KeyVault\accessPolicy.json" />
     <None Include="Templates\Resources\Storage\storageAccount.json" />
+    <None Include="Templates\Resources\WebApps\WebAppManyFeatures.json" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Templates\Resources\WebApps\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

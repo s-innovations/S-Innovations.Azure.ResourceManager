@@ -23,6 +23,8 @@ namespace SInnovations.Azure.ResourceManager
         private List<ITemplateAction> _actions = new List<ITemplateAction>();
         private ResourceSourceCollection childs = new ResourceSourceCollection();
 
+        public JObject PreLoadedValue { get; set; }
+
         public ResourceSource()
         {
 
@@ -50,6 +52,10 @@ namespace SInnovations.Azure.ResourceManager
         public static implicit operator JObject(ResourceSource source)
         {
             return TemplateHelper.ReadDataAsync(source).GetAwaiter().GetResult();
+        }
+        public static implicit operator ResourceSource(JObject json)
+        {
+            return new ResourceSource() { PreLoadedValue = json };
         }
         public static implicit operator ResourceSource(string source)
         {

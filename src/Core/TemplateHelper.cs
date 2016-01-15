@@ -16,7 +16,7 @@ namespace SInnovations.Azure.ResourceManager
         public static Task<JObject> ReadDataAsync(ResourceSource resourceName)
         {
             if (string.IsNullOrEmpty(resourceName.Path))
-                return Load(resourceName, new JObject());
+                return Load(resourceName, resourceName.PreLoadedValue ?? new JObject());
 
             using (Stream stream = resourceName.Assembly.GetManifestResourceStream(resourceName.Path))
             using (StreamReader reader = new StreamReader(stream))
