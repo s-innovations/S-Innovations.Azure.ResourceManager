@@ -81,7 +81,6 @@
     <Compile Include="ResourceSource.cs" />
     <Compile Include="ResourceSourceCollection.cs" />
     <Compile Include="ResourceSourceComposer.cs" />
-    <Compile Include="SecurityHelper.cs" />
     <Compile Include="TemplateActions\DependsOn.cs" />
     <Compile Include="TemplateActions\ResourceParameterReplacer.cs" />
     <Compile Include="TemplateActions\ResourceParamterConstant.cs" />
@@ -108,6 +107,7 @@
     <EmbeddedResource Include="Templates\Outputs\serverfarms.json" />
     <EmbeddedResource Include="Templates\Resources\LogicApps\httpTrigger.json" />
     <EmbeddedResource Include="Templates\Resources\KeyVault\accessPolicy.json" />
+    <EmbeddedResource Include="Templates\Resources\ServiceBus\servicebus.json" />
     <None Include="Templates\Resources\Storage\storageAccount.json" />
     <None Include="Templates\Resources\WebApps\WebAppManyFeatures.json" />
   </ItemGroup>

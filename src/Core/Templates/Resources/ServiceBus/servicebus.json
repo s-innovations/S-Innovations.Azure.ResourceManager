@@ -1,0 +1,80 @@
+﻿{
+  "apiVersion": "[variables('sbVersion')]",
+  "name": "[parameters('sbNamespace')]",
+  "type": "Microsoft.ServiceBus/namespaces",
+  "location": "[parameters('sbLocation')]",
+  "properties": {
+    "messagingSku": 2
+  },
+  "resources": [
+    {
+      "apiVersion": "[variables('sbVersion')]",
+      "name": "[concat(parameters('sbNamespace'),'/SendOnlyKey')]",
+      "type": "Microsoft.ServiceBus/namespaces/authorizationRules",
+      "dependsOn": [
+        "[concat('Microsoft.ServiceBus/namespaces/', parameters('sbNamespace'))]"
+      ],
+      "location": "[parameters('sbLocation')]",
+      "properties": {
+        "KeyName": "SendOnlyKey",
+        "ClaimType": "SendSharedAccessKey",
+        "ClaimValue": "None",
+        "PrimaryKey": "[parameters('primaryKey')]",
+        "SecondaryKey": "[parameters('secondaryKey')]",
+        "Rights": [ "Send" ],
+        "Revision": -1
+      }
+    },
+    {
+      "apiVersion": "[variables('sbVersion')]",
+      "name": "[variables('topicName')]",
+      "type": "Topics",
+      "dependsOn": [
+        "[concat('Microsoft.ServiceBus/namespaces/', parameters('sbNamespace'))]"
+      ],
+      "properties": {
+        "path": "[variables('topicName')]"
+      },
+      "resources": [
+        {
+          "apiVersion": "[variables('sbVersion')]",
+          "name": "[variables('topicSubscriptionName')]",
+          "type": "Subscriptions",
+          "dependsOn": [
+            "[variables('topicName')]",
+            "test-queue"
+          ],
+          "properties": {
+          }
+        }
+      ]
+    },
+    {
+      "apiVersion": "[variables('sbVersion')]",
+      "name": "test-queue",
+      "type": "Queues",
+      "dependsOn": [
+        "[concat('Microsoft.ServiceBus/namespaces/', parameters('sbNamespace'))]"
+      ],
+      "properties": {
+        "path": "test-queue",
+        "lockDuration": "00:01:00",
+        "maxSizeInMegabytes": 1024,
+        "requiresDuplicateDetection": true,
+        "requiresSession": false,
+        "defaultMessageTimeToLive": "10675199.02:48:05.4775807",
+        "deadLetteringOnMessageExpiration": false,
+        "duplicateDetectionHistoryTimeWindow": "00:10:00",
+        "maxDeliveryCount": 10,
+        "enableBatchedOperations": true,
+        "isAnonymousAccessible": false,
+        "supportOrdering": true,
+        "autoDeleteOnIdle": "10675199.02:48:05.4775807",
+        "enablePartitioning": false,
+        "enableExpress": false
+      },
+      "resources": [
+      ]
+    }
+  ]
+}
