@@ -87,11 +87,20 @@
     <Compile Include="UnitTest1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="LogicAppWorkflowTest.cs" />
+    <Compile Include="CryptoTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\Core\S-Innovations.Azure.ResourceManager.csproj">
       <Project>{bbb70d3f-2325-451e-ad78-342cacb254b4}</Project>
       <Name>S-Innovations.Azure.ResourceManager</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\ResourceManager.ConsoleHelper\S-Innovations.Azure.ResourceManager.ConsoleHelper.csproj">
+      <Project>{374bc8ab-d0e0-40b8-ab6d-725122d61859}</Project>
+      <Name>S-Innovations.Azure.ResourceManager.ConsoleHelper</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\ResourceManager.CryptoHelper\S-Innovations.Azure.ResourceManager.CryptoHelper.csproj">
+      <Project>{bdb956d8-eb62-42a8-937c-eb62dace143a}</Project>
+      <Name>S-Innovations.Azure.ResourceManager.CryptoHelper</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\src\ResourceManager.KeyVault\S-Innovations.Azure.ResourceManager.KeyVault.csproj">
       <Project>{f4765296-aed4-4ba8-b8fa-54e910c4f12d}</Project>
