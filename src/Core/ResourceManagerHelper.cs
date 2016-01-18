@@ -19,9 +19,9 @@ using Newtonsoft.Json.Linq;
 namespace SInnovations.Azure.ResourceManager
 {
 
-   
 
-    
+
+
     public class ResourceManagerHelper
     {
 
@@ -67,14 +67,14 @@ namespace SInnovations.Azure.ResourceManager
 
             options.AccessToken = token.AccessToken;
             options.RefreshToken = token.RefreshToken;
-            options.TenantId = token.TenantId ?? FindClaim(token.AccessToken,"tid"); 
-            options.ObjectId = token.UserInfo?.UniqueId ?? FindClaim(token.AccessToken, "oid"); 
+            options.TenantId = token.TenantId ?? FindClaim(token.AccessToken, "tid");
+            options.ObjectId = token.UserInfo?.UniqueId ?? FindClaim(token.AccessToken, "oid");
 
 
-        
+
         }
 
-        private static string FindClaim(string accessToken,string claim)
+        private static string FindClaim(string accessToken, string claim)
         {
             var base64 = accessToken.Split('.')[1];
             base64 = base64.PadRight(base64.Length + (4 - base64.Length % 4) % 4, '=');
@@ -97,7 +97,7 @@ namespace SInnovations.Azure.ResourceManager
         public static JObject CreateOutput(string v1, string v2, string v3)
         {
             return new JObject(
-                new JProperty(v1, 
+                new JProperty(v1,
                     new JObject(
                         new JProperty("type", v2),
                         new JProperty("value", v3)
@@ -122,7 +122,7 @@ namespace SInnovations.Azure.ResourceManager
             }
 
         }
-       
+
         public static Stream Read(string name)
         {
             return typeof(ResourceManagerHelper).Assembly.GetManifestResourceStream(name);
@@ -136,7 +136,7 @@ namespace SInnovations.Azure.ResourceManager
 
 
         public static async Task<JObject> CreateTemplateAsync(ResourceSourceCollection resources,
-            ResourceSourceCollection parameterPath, 
+            ResourceSourceCollection parameterPath,
             ResourceSourceCollection variablePath = null,
             ResourceSourceCollection outputs = null)
         {
@@ -154,7 +154,7 @@ namespace SInnovations.Azure.ResourceManager
             var variableNames = Regex.Matches(template.ToString(), @"variables\('(.*?)'\)").Cast<Match>().Where(k => k.Success).Select(k => k.Groups[1].Value).ToList();
 
 
-            var parameters = new JObject( (await Task.WhenAll(parameterPath.Select(p => TemplateHelper.ReadDataAsync(p)))).SelectMany(o=>o.Properties()) );
+            var parameters = new JObject((await Task.WhenAll(parameterPath.Select(p => TemplateHelper.ReadDataAsync(p)))).SelectMany(o => o.Properties()));
             var variables = new JObject((await Task.WhenAll(variablePath.Select(p => TemplateHelper.ReadDataAsync(p)))).SelectMany(o => o.Properties()));
 
             var paramterList = parameters.Properties().Where(p => parameterNames.Contains(p.Name)).ToList();
@@ -185,7 +185,7 @@ namespace SInnovations.Azure.ResourceManager
 
             if (outputs != null)
                 template["outputs"] = new JObject(
-                   (await Task.WhenAll(outputs.Select(r => TemplateHelper.ReadDataAsync(r)))).SelectMany(o=>o.Properties()));
+                   (await Task.WhenAll(outputs.Select(r => TemplateHelper.ReadDataAsync(r)))).SelectMany(o => o.Properties()));
 
 
             return template;
@@ -299,13 +299,44 @@ namespace SInnovations.Azure.ResourceManager
                 templateDeploymentClient.SubscriptionId = credentials.SubscriptionId;
                 var deploymentResultWrapper = await templateDeploymentClient.Deployments.GetAsync(resourceGroup, deploymentName);
                 return deploymentResultWrapper.Properties.Outputs as JObject;
-               
+
             }
         }
+        public async static Task<DeploymentValidateResult> ValidateTemplateDeploymentAsync(
+            ApplicationCredentials credentials, string resourceGroup, string deploymentName,
+            JObject template, JObject parameters, DeploymentMode mode = DeploymentMode.Incremental)
+        {
 
+            var hash = TemplateHelper.CalculateMD5Hash(template.ToString() + parameters.ToString());
+            var deployment = new Deployment();
+
+            deployment.Properties = new DeploymentProperties
+            {
+                Mode = mode,
+                Template = template,
+                Parameters = parameters
+            };
+            using (var templateDeploymentClient = new ResourceManagementClient(new TokenCredentials(credentials.AccessToken)))
+            {
+                templateDeploymentClient.SubscriptionId = credentials.SubscriptionId;
+
+
+                var result = await templateDeploymentClient.Deployments.ValidateAsync(resourceGroup, deploymentName, deployment);
+
+                if (result.Error != null)
+                    throw new Exception(result.Error.Message);
+
+                return result;
+
+
+
+
+            }
+
+        }
         public async static Task<DeploymentExtended> CreateTemplateDeploymentAsync(
-            ApplicationCredentials credentials, string resourceGroup, string deploymentName, 
-            JObject template, JObject parameters,  bool waitForDeployment = true, DeploymentMode mode = DeploymentMode.Incremental)
+            ApplicationCredentials credentials, string resourceGroup, string deploymentName,
+            JObject template, JObject parameters, bool waitForDeployment = true, DeploymentMode mode = DeploymentMode.Incremental)
         {
 
             var hash = TemplateHelper.CalculateMD5Hash(template.ToString() + parameters.ToString());
