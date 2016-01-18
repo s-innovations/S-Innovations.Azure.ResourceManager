@@ -56,7 +56,7 @@ namespace SInnovations.Azure.ResourceManager.TemplateActions
             {
                 var newValue = token.Value<string>().Replace($"parameters('{parameterName}')", value.ToString());
 
-                if (newValue.Equals(value.ToString()))
+                if (newValue.Equals(token.ToString()))
                     return;
 
 
@@ -65,7 +65,14 @@ namespace SInnovations.Azure.ResourceManager.TemplateActions
                     (token.Parent as JProperty).Value = value;
                 }
                 else {
-                    (token.Parent as JProperty).Value = newValue;
+                    if (token.Parent is JProperty)
+                    {
+                        (token.Parent as JProperty).Value = newValue;
+                    }
+                    else if (token.Parent is JArray)
+                    {
+                        token.Replace(newValue);
+                    }
                 }
             }
         }
