@@ -55,6 +55,11 @@ namespace SInnovations.Azure.ResourceManager.TemplateActions
             else if (token.Type == JTokenType.String)
             {
                 var newValue = token.Value<string>().Replace($"parameters('{parameterName}')", value.ToString());
+
+                if (newValue.Equals(value.ToString()))
+                    return;
+
+
                 if (newValue.Trim('[', ']').Equals(value.ToString()))
                 {
                     (token.Parent as JProperty).Value = value;
