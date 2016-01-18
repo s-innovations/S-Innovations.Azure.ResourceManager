@@ -9,7 +9,7 @@ using CommandLine;
 
 namespace SInnovations.Azure.ResourceManager.ConsoleHelper
 {
-    internal class ApplicationCredentialsOptions
+    public class ApplicationCredentialsOptions
     {
         [Option('c', "clientId",
             HelpText = "The clientId of the Azure Application Id to use")]
@@ -136,9 +136,13 @@ namespace SInnovations.Azure.ResourceManager.ConsoleHelper
 
     public static class ConsoleReaderHelper
     {
-        public static ApplicationCredentials ReadFromConsole(this ApplicationCredentials options, string[] arguments)
+        public static ApplicationCredentials ReadFromConsole(this ApplicationCredentials cred, string[] args)
         {
-            var consoleOps = new ApplicationCredentialsOptions();
+            return cred.ReadFromConsole<ApplicationCredentialsOptions>(args);
+        }
+        public static ApplicationCredentials ReadFromConsole<T>(this ApplicationCredentials options, string[] arguments) where T : ApplicationCredentialsOptions,new()
+        {
+            var consoleOps = new T();
             var b = new CommandLine.Parser((s)=>
             {
                 s.IgnoreUnknownArguments = true; 
