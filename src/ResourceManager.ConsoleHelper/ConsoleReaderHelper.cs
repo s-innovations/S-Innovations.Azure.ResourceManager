@@ -136,11 +136,12 @@ namespace SInnovations.Azure.ResourceManager.ConsoleHelper
 
     public static class ConsoleReaderHelper
     {
-        public static ApplicationCredentials ReadFromConsole(this ApplicationCredentials cred, string[] args)
+        public static ApplicationCredentialsOptions ReadFromConsole(this ApplicationCredentials cred, string[] args)
         {
             return cred.ReadFromConsole<ApplicationCredentialsOptions>(args);
+            
         }
-        public static ApplicationCredentials ReadFromConsole<T>(this ApplicationCredentials options, string[] arguments) where T : ApplicationCredentialsOptions,new()
+        public static T ReadFromConsole<T>(this ApplicationCredentials options, string[] arguments) where T : ApplicationCredentialsOptions,new()
         {
             var consoleOps = new T();
             var b = new CommandLine.Parser((s)=>
@@ -162,7 +163,7 @@ namespace SInnovations.Azure.ResourceManager.ConsoleHelper
             options.CliendId = consoleOps.CliendId;
             options.AccessToken = consoleOps.AccessToken;
 
-            return options;
+            return consoleOps;
         }
 
         public static Tuple<string,object> ReadFromConsole(this ApplicationCredentials options, Dictionary<string,Type> verbs,  string[] arguments) 
