@@ -73,6 +73,11 @@ namespace SInnovations.Azure.ResourceManager
 
 
         }
+        public static void ParseAndSetClaimValues(ApplicationCredentials options)
+        {
+            options.TenantId = options.TenantId ?? FindClaim(options.AccessToken, "tid");
+            options.ObjectId = options.ObjectId ?? FindClaim(options.AccessToken, "oid");
+        }
 
         private static string FindClaim(string accessToken, string claim)
         {
