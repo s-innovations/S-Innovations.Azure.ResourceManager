@@ -302,7 +302,12 @@ namespace SInnovations.Azure.ResourceManager
             using (var templateDeploymentClient = new ResourceManagementClient(new TokenCredentials(credentials.AccessToken)))
             {
                 templateDeploymentClient.SubscriptionId = credentials.SubscriptionId;
+                if(!await templateDeploymentClient.Deployments.CheckExistenceAsync(resourceGroup, deploymentName) ?? false)
+                {
+                    return null;
+                }
                 var deploymentResultWrapper = await templateDeploymentClient.Deployments.GetAsync(resourceGroup, deploymentName);
+                
                 return deploymentResultWrapper.Properties.Outputs as JObject;
 
             }
