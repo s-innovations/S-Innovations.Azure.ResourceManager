@@ -307,7 +307,6 @@ namespace SInnovations.Azure.ResourceManager
                     return null;
                 }
                 var deploymentResultWrapper = await templateDeploymentClient.Deployments.GetAsync(resourceGroup, deploymentName);
-                
                 return deploymentResultWrapper.Properties.Outputs as JObject;
 
             }
