@@ -6,6 +6,7 @@
   "properties": {
     "enabledForDeployment": "[parameters('enableVaultForDeployment')]",
     "enabledForDiskEncryption": "[parameters('enableVaultForDiskEncryption')]",
+    "enabledForTemplateDeployment": "[parameters('enabledForTemplateDeployment')]",
     "tenantId": "[parameters('tenantId')]",
     "accessPolicies": [
       {
