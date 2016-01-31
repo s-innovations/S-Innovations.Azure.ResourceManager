@@ -260,7 +260,7 @@ namespace SInnovations.Azure.ResourceManager
         public async static Task<ResourceGroup> CreateResourceGroupIfNotExistAsync(string subscriptionId, string token, string resourceGroupName, string location)
         {
             ServiceClientCredentials credential = new TokenCredentials(token);
-            var resourceGroup = new ResourceGroup { Location = location, Tags = new Dictionary<string, string> { { "source", "SInnovations.Docker.ResourceManager" } } };
+            var resourceGroup = new ResourceGroup { Location = location, Tags = new Dictionary<string, string> { { "hidden-source", typeof(ResourceManagerHelper).Assembly.FullName } } };
             using (var resourceManagementClient = new ResourceManagementClient(credential))
             {
                 resourceManagementClient.SubscriptionId = subscriptionId;
@@ -271,6 +271,16 @@ namespace SInnovations.Azure.ResourceManager
 
                 return await resourceManagementClient.ResourceGroups.GetAsync(resourceGroupName);
             }
+        }
+        public async static Task<ResourceGroup> UpdateResourceGroupAsync(string subscriptionId, string token, ResourceGroup group)
+        {
+            ServiceClientCredentials credential = new TokenCredentials(token);
+            using (var resourceManagementClient = new ResourceManagementClient(credential))
+            {
+                resourceManagementClient.SubscriptionId = subscriptionId;
+                return await resourceManagementClient.ResourceGroups.CreateOrUpdateAsync(group.Name, group);
+            }
+
         }
         public async static Task DeleteIfExists(string subscriptionId, string token, string resourceGroupName)
         {
@@ -302,7 +312,7 @@ namespace SInnovations.Azure.ResourceManager
             using (var templateDeploymentClient = new ResourceManagementClient(new TokenCredentials(credentials.AccessToken)))
             {
                 templateDeploymentClient.SubscriptionId = credentials.SubscriptionId;
-                if(!await templateDeploymentClient.Deployments.CheckExistenceAsync(resourceGroup, deploymentName) ?? false)
+                if (!await templateDeploymentClient.Deployments.CheckExistenceAsync(resourceGroup, deploymentName) ?? false)
                 {
                     return null;
                 }
