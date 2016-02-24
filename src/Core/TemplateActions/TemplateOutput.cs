@@ -34,12 +34,17 @@ namespace SInnovations.Azure.ResourceManager.TemplateActions
         }
         public async Task TemplateActionAsync(JObject obj)
         {
+            if (obj.SelectToken("$schema")?.ToString().Contains("deploymentTemplate") ?? false)
+            {
+                obj = (obj["output"] ?? (obj["output"] = new JObject())) as JObject;
+            }
+
             obj[this.name] =
                     new JObject(
                         new JProperty("type", this.type),
                         new JProperty("value", this.value)
                     );
-                
+
         }
 
         public static ITemplateAction FromVaraible(string v1, string v2)
@@ -48,4 +53,4 @@ namespace SInnovations.Azure.ResourceManager.TemplateActions
         }
     }
 }
- 
+
