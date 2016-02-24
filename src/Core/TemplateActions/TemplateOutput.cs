@@ -36,7 +36,7 @@ namespace SInnovations.Azure.ResourceManager.TemplateActions
         {
             if (obj.SelectToken("$schema")?.ToString().Contains("deploymentTemplate") ?? false)
             {
-                obj = (obj["output"] ?? (obj["output"] = new JObject())) as JObject;
+                obj = (obj["outputs"] ?? (obj["outputs"] = new JObject())) as JObject;
             }
 
             obj[this.name] =
