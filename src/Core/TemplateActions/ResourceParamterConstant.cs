@@ -33,6 +33,7 @@ namespace SInnovations.Azure.ResourceManager.TemplateActions
         }
         public Task TemplateActionAsync(JObject obj)
         {
+         
             foreach (var prop in obj.Properties())
             {
                 ReplaceValue(prop.Value);
