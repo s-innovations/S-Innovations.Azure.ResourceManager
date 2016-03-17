@@ -375,8 +375,13 @@ namespace SInnovations.Azure.ResourceManager
                 if (rg.Tags == null)
                     rg.Tags = new Dictionary<string, string>();
 
-                if (!(rg.Tags.ContainsKey(deploymentName) && rg.Tags[deploymentName] == hash && ((await templateDeploymentClient.Deployments.CheckExistenceAsync(resourceGroup, deploymentName)) ?? false)))
+                var tagName = $"hidden-armdeployment{hash}";
+                var tagValue = deploymentName;
+                if (rg.Tags.ContainsKey(tagName) && (await templateDeploymentClient.Deployments.CheckExistenceAsync(resourceGroup, rg.Tags[tagName]) ?? false))
                 {
+                    var deploymentResult = await templateDeploymentClient.Deployments.GetAsync(resourceGroup, rg.Tags[tagName]);
+                    return deploymentResult;
+                }else{
 
 
 
@@ -384,10 +389,16 @@ namespace SInnovations.Azure.ResourceManager
 
                     if (result.Error != null)
                         throw new Exception(result.Error.Message);
+
                     var deploymentResult = await templateDeploymentClient.Deployments.CreateOrUpdateAsync(resourceGroup,
                         deploymentName, deployment);
 
-                    rg.Tags[deploymentName] = hash;
+                    foreach (var key in rg.Tags.Keys.Where(k => k.StartsWith("hidden-armdeployment")).ToArray())
+                    {
+                        rg.Tags.Remove(key);
+                    }
+                    rg.Tags[tagName] = tagValue;
+
                     await templateDeploymentClient.ResourceGroups.CreateOrUpdateAsync(resourceGroup, rg);
 
                     while (waitForDeployment && !(deploymentResult.Properties.ProvisioningState == "Failed" || deploymentResult.Properties.ProvisioningState == "Succeeded"))
@@ -400,11 +411,6 @@ namespace SInnovations.Azure.ResourceManager
 
                     return deploymentResult;
 
-                }
-                else {
-
-                    var deploymentResult = await templateDeploymentClient.Deployments.GetAsync(resourceGroup, deploymentName);
-                    return deploymentResult;
                 }
 
             }
