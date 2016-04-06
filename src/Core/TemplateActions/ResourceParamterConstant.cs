@@ -61,9 +61,9 @@ namespace SInnovations.Azure.ResourceManager.TemplateActions
                     return;
 
 
-                if (newValue.Trim('[', ']').Equals(value.ToString()))
+                if (newValue.Trim('[', ']').Equals(value.ToString().Trim('[', ']')))
                 {
-                    (token.Parent as JProperty).Value = value;
+                        (token.Parent as JProperty).Value = value;
                 }
                 else {
                     if (token.Parent is JProperty)

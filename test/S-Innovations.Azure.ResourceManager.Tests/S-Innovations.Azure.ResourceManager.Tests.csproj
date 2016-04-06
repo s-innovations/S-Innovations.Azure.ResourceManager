@@ -84,6 +84,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="LogicAppWorkflowTest.cs" />
     <Compile Include="CryptoTests.cs" />
+    <Compile Include="ResourceParamterConstantTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\Core\S-Innovations.Azure.ResourceManager.csproj">
@@ -105,6 +106,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <EmbeddedResource Include="Fixtures\secretTest.json" />
+    <EmbeddedResource Include="Fixtures\secretTestExpected.json" />
     <None Include="packages.config" />
     <EmbeddedResource Include="paramlist.json" />
   </ItemGroup>
