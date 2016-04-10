@@ -355,7 +355,7 @@ namespace SInnovations.Azure.ResourceManager
         }
         public async static Task<DeploymentExtended> CreateTemplateDeploymentAsync(
             ApplicationCredentials credentials, string resourceGroup, string deploymentName,
-            JObject template, JObject parameters, bool waitForDeployment = true, DeploymentMode mode = DeploymentMode.Incremental)
+            JObject template, JObject parameters, bool waitForDeployment = true, DeploymentMode mode = DeploymentMode.Incremental, bool prevalidate= false)
         {
 
             var hash = TemplateHelper.CalculateMD5Hash(template.ToString() + parameters.ToString());
@@ -384,11 +384,13 @@ namespace SInnovations.Azure.ResourceManager
                 }else{
 
 
+                    if (prevalidate)
+                    {
+                        var result = await templateDeploymentClient.Deployments.ValidateAsync(resourceGroup, deploymentName, deployment);
 
-                    var result = await templateDeploymentClient.Deployments.ValidateAsync(resourceGroup, deploymentName, deployment);
-
-                    if (result.Error != null)
-                        throw new Exception(result.Error.Message);
+                        if (result.Error != null)
+                            throw new Exception(result.Error.Message);
+                    }
 
                     var deploymentResult = await templateDeploymentClient.Deployments.CreateOrUpdateAsync(resourceGroup,
                         deploymentName, deployment);
