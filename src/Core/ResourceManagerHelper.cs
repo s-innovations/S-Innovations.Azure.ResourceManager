@@ -360,7 +360,7 @@ namespace SInnovations.Azure.ResourceManager
 
             var hash = TemplateHelper.CalculateMD5Hash(template.ToString() + parameters.ToString());
             var deployment = new Deployment();
-
+            
             deployment.Properties = new DeploymentProperties
             {
                 Mode = mode,
@@ -395,10 +395,10 @@ namespace SInnovations.Azure.ResourceManager
                     var deploymentResult = await templateDeploymentClient.Deployments.CreateOrUpdateAsync(resourceGroup,
                         deploymentName, deployment);
 
-                    foreach (var key in rg.Tags.Keys.Where(k => k.StartsWith("hidden-armdeployment")).ToArray())
-                    {
-                        rg.Tags.Remove(key);
-                    }
+                    //foreach (var key in rg.Tags.Keys.Where(k => k.StartsWith("hidden-armdeployment")).ToArray())
+                    //{
+                    //    rg.Tags.Remove(key);
+                    //}
                     rg.Tags[tagName] = tagValue;
 
                     await templateDeploymentClient.ResourceGroups.CreateOrUpdateAsync(resourceGroup, rg);
