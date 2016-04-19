@@ -392,8 +392,9 @@ namespace SInnovations.Azure.ResourceManager
                             throw new Exception(result.Error.Message);
                     }
 
-                    var deploymentResult = await templateDeploymentClient.Deployments.CreateOrUpdateAsync(resourceGroup,
+                    var deploymentResult = await templateDeploymentClient.Deployments.BeginCreateOrUpdateAsync(resourceGroup,
                         deploymentName, deployment);
+                  
 
                     //foreach (var key in rg.Tags.Keys.Where(k => k.StartsWith("hidden-armdeployment")).ToArray())
                     //{
