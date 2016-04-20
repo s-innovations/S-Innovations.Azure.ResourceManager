@@ -380,8 +380,13 @@ namespace SInnovations.Azure.ResourceManager
                 if (rg.Tags.ContainsKey(tagName) && (await templateDeploymentClient.Deployments.CheckExistenceAsync(resourceGroup, rg.Tags[tagName]) ?? false))
                 {
                     var deploymentResult = await templateDeploymentClient.Deployments.GetAsync(resourceGroup, rg.Tags[tagName]);
-                    return deploymentResult;
-                }else{
+                    if (deploymentResult.Properties.ProvisioningState == "Succeeded")
+                    {
+                        return deploymentResult;
+                    }
+                }
+
+                {
 
 
                     if (prevalidate)
