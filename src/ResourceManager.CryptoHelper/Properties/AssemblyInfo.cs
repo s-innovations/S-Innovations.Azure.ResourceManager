@@ -6,9 +6,9 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("ResourceManager.CryptoHelper")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Crypto Helper libraries for Azure Resource Manager Helpers")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("S-Innovations.Net v/Poul K. Sørensen")]
 [assembly: AssemblyProduct("ResourceManager.CryptoHelper")]
 [assembly: AssemblyCopyright("Copyright ©  2016")]
 [assembly: AssemblyTrademark("")]
@@ -34,4 +34,4 @@ using System.Runtime.InteropServices;
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
-[assembly: AssemblyInformationalVersion("1.0.0-pre")]
+[assembly: AssemblyInformationalVersion("2.0.0-pre")]

@@ -6,9 +6,9 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("S-Innovations.Azure.ResourceManager")]
-[assembly: AssemblyDescription("Resource Manager KeyVault helpers")]
+[assembly: AssemblyDescription("Azure Resource Manager helpers")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("S-Innovations.net")]
+[assembly: AssemblyCompany("S-Innovations.net v/Poul K. Sørensen")]
 [assembly: AssemblyProduct("Core")]
 [assembly: AssemblyCopyright("Copyright ©  2015")]
 [assembly: AssemblyTrademark("")]
@@ -34,4 +34,4 @@ using System.Runtime.InteropServices;
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
-[assembly: AssemblyInformationalVersion("1.0.0-pre")]
+[assembly: AssemblyInformationalVersion("2.0.0-pre")]

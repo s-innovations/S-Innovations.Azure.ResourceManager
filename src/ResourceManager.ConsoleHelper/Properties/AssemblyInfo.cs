@@ -6,9 +6,9 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("S-Innovations.Azure.ResourceManager.ConsoleHelper")]
-[assembly: AssemblyDescription("Console Argument Parsing for")]
+[assembly: AssemblyDescription("Console Argument Parsing for Azure Resource Manager Helpers")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("S-Innovations.Net")]
+[assembly: AssemblyCompany("S-Innovations.Net v/Poul K. Sørensen")]
 [assembly: AssemblyProduct("S-Innovations.Azure.ResourceManager.ConsoleHelper")]
 [assembly: AssemblyCopyright("Copyright ©  2015")]
 [assembly: AssemblyTrademark("")]
@@ -34,4 +34,4 @@ using System.Runtime.InteropServices;
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
-[assembly:AssemblyInformationalVersion("1.0.0-pre")]
+[assembly:AssemblyInformationalVersion("2.0.0-pre")]

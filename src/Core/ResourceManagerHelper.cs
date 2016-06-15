@@ -7,8 +7,8 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Microsoft.Azure.Management.Resources;
-using Microsoft.Azure.Management.Resources.Models;
+using Microsoft.Azure.Management.ResourceManager;
+using Microsoft.Azure.Management.ResourceManager.Models;
 using Microsoft.IdentityModel.Clients.ActiveDirectory;
 using Microsoft.Rest;
 using Microsoft.Rest.Azure.OData;
@@ -119,8 +119,7 @@ namespace SInnovations.Azure.ResourceManager
 
                 using (var subscriptionClient = new SubscriptionClient(new TokenCredentials(azureToken)))
                 {
-                    subscriptionClient.SubscriptionId = "";
-                    var subscriptions = await subscriptionClient.Subscriptions.ListAsync();
+                      var subscriptions = await subscriptionClient.Subscriptions.ListAsync();
                     return subscriptions.ToArray();
 
 
