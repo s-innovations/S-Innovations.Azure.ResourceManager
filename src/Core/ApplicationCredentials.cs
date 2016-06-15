@@ -15,6 +15,6 @@ namespace SInnovations.Azure.ResourceManager
         public string TenantId { get; set; }
         public string ObjectId { get; set; }
         public string AccessToken { get; set; }
-        public string RefreshToken { get; set; }
+      //  public string RefreshToken { get; set; }
     }
 }

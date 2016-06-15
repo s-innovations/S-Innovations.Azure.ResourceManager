@@ -19,7 +19,7 @@ namespace ResourceManager.KeyVault
                 //   return Task.FromResult(options.AccessToken);
                 var context = new AuthenticationContext(r, new FileCache());
                 //var result = context.AcquireTokenByRefreshToken(options.RefreshToken,options.CliendId,c);
-                var result = context.AcquireToken(c, "1950a258-227b-4e31-a9cf-717495945fc2", new Uri("urn:ietf:wg:oauth:2.0:oob"));
+                var result = context.AcquireTokenAsync(c, "1950a258-227b-4e31-a9cf-717495945fc2", new Uri("urn:ietf:wg:oauth:2.0:oob"), new PlatformParameters(PromptBehavior.Auto)).GetAwaiter().GetResult();
                 return Task.FromResult(result.AccessToken);
             });
             var exists = await keyVaultClient.GetSecretsAsync(keyvaultUri);

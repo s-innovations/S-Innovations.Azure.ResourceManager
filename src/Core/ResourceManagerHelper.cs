@@ -42,7 +42,7 @@ namespace SInnovations.Azure.ResourceManager
             {
                 ClientCredential cc = new ClientCredential(clientId, secret);
                 var context = new AuthenticationContext($"https://login.windows.net/{tenant}", new FileCache());
-                var result = context.AcquireToken("https://management.core.windows.net/", cc);
+                var result = context.AcquireTokenAsync("https://management.core.windows.net/", cc).GetAwaiter().GetResult();
                 if (result == null)
                 {
                     throw new InvalidOperationException("Failed to obtain the JWT token");
@@ -52,7 +52,7 @@ namespace SInnovations.Azure.ResourceManager
             else
             {
                 var context = new AuthenticationContext($"https://login.windows.net/{tenant}", new FileCache());
-                var result = context.AcquireToken("https://management.core.windows.net/", clientId, new Uri(redirectUrl));
+                var result = context.AcquireTokenAsync("https://management.core.windows.net/", clientId, new Uri(redirectUrl),new PlatformParameters(PromptBehavior.Auto)).GetAwaiter().GetResult();
                 if (result == null)
                 {
                     throw new InvalidOperationException("Failed to obtain the JWT token");
@@ -66,7 +66,7 @@ namespace SInnovations.Azure.ResourceManager
             var token = GetAuthorizationHeader(options.TenantId, options.CliendId, options.Secret, options.ReplyUrl);
 
             options.AccessToken = token.AccessToken;
-            options.RefreshToken = token.RefreshToken;
+         //   options.RefreshToken = token.RefreshToken;
             options.TenantId = token.TenantId ?? FindClaim(token.AccessToken, "tid");
             options.ObjectId = token.UserInfo?.UniqueId ?? FindClaim(token.AccessToken, "oid");
 
@@ -90,11 +90,12 @@ namespace SInnovations.Azure.ResourceManager
         public static string test(string clientId, string redirectUri, string tenant = null)
         {
             var authContext = new AuthenticationContext($"https://login.windows.net/{tenant ?? "common"}", new FileCache());
-            var t = authContext.GetAuthorizationRequestURL("https://management.core.windows.net/", clientId, new Uri(redirectUri), UserIdentifier.AnyUser, null);
+            var t = authContext.GetAuthorizationRequestUrlAsync("https://management.core.windows.net/", clientId, new Uri(redirectUri), UserIdentifier.AnyUser, null).GetAwaiter().GetResult();
 
             //    var code = "AAABAAAAiL9Kn2Z27UubvWFPbm0gLfmp1ExBQltdN9obd6rGamy-zGUM4_wBv9xKG8Q-XwQl2CpxGEz-N2LYNovZMcylQ1zR_u7XV5TD-aN2yOp1rjC2mJpzAI2AaiezbUOvHKouTgeAvWEDk3QUd_qhGZTWaVkOzYHFawqmPKXshpYQozsRslmvhr49VoVEgJs7eyF7COBennf6A3aVDBGtAijfouJLo1kKhYhalf3bRR1wdbLApj7GKaYb7oy-Q_6mGLry1rcQMNHg5h4gvRPeYqT7jX3FGmUePjj1-TwKsIylvvC4f8f69D4v_Wp11FsI6WLSH95wJAj6FKDG04ixUSoy6AXujJcWMZbv0AOzZ3X-V_EmMFM6InNrebmA_3awMibHNI62EtpOjpgnb4FjyboFplXhcNMOUio1DwwOu7sa0IFm0UVK1KTTCra6V34k9BiQfCR0bZXpG9fn3RqwaaCJZu4NBttP1oXoryrp6YsxbskOqJCTe-_AeiPMgcm-I24rzU_8x9ZKQ-JM5ACFySXQggq_csTcWG-Kj8-JT4VY4xKFOGBCO5czxn_g0bH3UuUf8DniOxZPZ0EEoDaUhxfraTpXVy9p5o4hXyr65Upt5eYy5LxR1Emdc-Mfho92SsEnimqMXexwtopnHqx0z-pr9OCe5vnZZdyWFbHNyhDeM6ADXvnKbTQy2xW3kaUMFWaaLd3-s4jq6_D4Py3Mawtz5iAA";
             //    authContext.AcquireTokenByAuthorizationCode(code, new Uri(redirectUri), new ClientCredential(clientId, secret));
-            var token = authContext.AcquireToken("https://management.core.windows.net/", clientId, new Uri(redirectUri), PromptBehavior.Auto, UserIdentifier.AnyUser);
+          
+            var token = authContext.AcquireTokenAsync("https://management.core.windows.net/", clientId, new Uri(redirectUri), new PlatformParameters(PromptBehavior.Auto), UserIdentifier.AnyUser).GetAwaiter().GetResult();
 
             return token.AccessToken;
         }
