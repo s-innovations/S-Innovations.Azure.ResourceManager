@@ -522,7 +522,7 @@ namespace SInnovations.Azure.ResourceManager
         private static StringBuilder GetUpto256Chars(Dictionary<string, string> deploymentsTags, Queue<string> keys)
         {
             var sb = new StringBuilder();
-            while ((sb.Length + deploymentsTags[keys.Peek()].Length + keys.Peek().Length + 2) < 256 && keys.Any())
+            while (keys.Any() && (sb.Length + deploymentsTags[keys.Peek()].Length + keys.Peek().Length + 2) < 256)
             {
                 var k = keys.Dequeue();
                 sb.Append($"{k}:{deploymentsTags[k]},");
