@@ -355,10 +355,11 @@ namespace SInnovations.Azure.ResourceManager
         }
         public async static Task<DeploymentExtended> CreateTemplateDeploymentAsync(
             ApplicationCredentials credentials, string resourceGroup, string deploymentName,
-            JObject template, JObject parameters, bool waitForDeployment = true, DeploymentMode mode = DeploymentMode.Incremental, bool prevalidate= false)
+            JObject template, JObject parameters, bool waitForDeployment = true, DeploymentMode mode = DeploymentMode.Incremental, bool prevalidate= false, bool appendTimestamp=false)
         {
 
             var hash = TemplateHelper.CalculateMD5Hash(template.ToString() + parameters.ToString());
+            var deploymentNameTimestamped = deploymentName + (appendTimestamp ? "-" + DateTimeOffset.UtcNow.ToString("yyyyMMdd-HHmmss") : "");
             var deployment = new Deployment();
             
             deployment.Properties = new DeploymentProperties
@@ -367,45 +368,96 @@ namespace SInnovations.Azure.ResourceManager
                 Template = template,
                 Parameters = parameters
             };
+
+          
+
             using (var templateDeploymentClient = new ResourceManagementClient(new TokenCredentials(credentials.AccessToken)))
             {
                 templateDeploymentClient.SubscriptionId = credentials.SubscriptionId;
+
+               
+
 
                 var rg = await templateDeploymentClient.ResourceGroups.GetAsync(resourceGroup);
                 if (rg.Tags == null)
                     rg.Tags = new Dictionary<string, string>();
 
-                var tagName = $"hidden-armdeployment{hash}";
-                var tagValue = deploymentName;
-                if (rg.Tags.ContainsKey(tagName) && (await templateDeploymentClient.Deployments.CheckExistenceAsync(resourceGroup, rg.Tags[tagName]) ?? false))
+
+                //var oldDeployments = await templateDeploymentClient.Deployments.ListAsync(resourceGroup);
+                //var list =new List<DeploymentExtended>(oldDeployments);
+                //while(!string.IsNullOrEmpty(oldDeployments.NextPageLink))
+                //{
+                //    oldDeployments = await templateDeploymentClient.Deployments.ListNextAsync(oldDeployments.NextPageLink);
+                //    list.AddRange(oldDeployments);
+                //}
+
+                //    list.First().
+                var tagName = "hidden-armdeployments";
+                if (rg.Tags.ContainsKey(tagName))
                 {
-                    var deploymentResult = await templateDeploymentClient.Deployments.GetAsync(resourceGroup, rg.Tags[tagName]);
-                    if (deploymentResult.Properties.ProvisioningState == "Succeeded")
+                    var deploymentsTags = rg.Tags[tagName].Split(',').ToDictionary(k => k.Split(':').First(), v => string.Join(":", v.Split(':').Skip(1)));
+
+                    
+
+                    if (deploymentsTags.ContainsKey(hash) && (await templateDeploymentClient.Deployments.CheckExistenceAsync(resourceGroup, deploymentsTags[hash]) ?? false))
                     {
-                        return deploymentResult;
+                        var deploymentResult = await templateDeploymentClient.Deployments.GetAsync(resourceGroup, deploymentsTags[hash]);
+                        if (deploymentResult.Properties.ProvisioningState == "Succeeded")
+                        {
+                            return deploymentResult;
+                        }
                     }
+
+                    foreach(var key in deploymentsTags.Keys.ToArray())
+                    {
+                        if(deploymentsTags[key] == deploymentName)
+                        {
+                            deploymentsTags.Remove(key);
+                        }
+                    }
+                    deploymentsTags.Add(hash, deploymentName);
+                    rg.Tags[tagName] = string.Join(",", deploymentsTags.Select(k => $"{k.Key}:{k.Value}"));
+
+                }else
+                {
+                    rg.Tags[tagName] = hash + ":" + deploymentName;
                 }
+
+           
+
+
+                //var tagName = $"hidden-armdeployment{hash}";
+                //var tagValue = deploymentNameTimestamped;
+                //if (rg.Tags.ContainsKey(tagName) && (await templateDeploymentClient.Deployments.CheckExistenceAsync(resourceGroup, rg.Tags[tagName]) ?? false))
+                //{
+                //    var deploymentResult = await templateDeploymentClient.Deployments.GetAsync(resourceGroup, rg.Tags[tagName]);
+                //    if (deploymentResult.Properties.ProvisioningState == "Succeeded")
+                //    {
+                //        return deploymentResult;
+                //    }
+                //}
 
                 {
 
 
                     if (prevalidate)
                     {
-                        var result = await templateDeploymentClient.Deployments.ValidateAsync(resourceGroup, deploymentName, deployment);
+                        var result = await templateDeploymentClient.Deployments.ValidateAsync(resourceGroup, deploymentNameTimestamped, deployment);
 
                         if (result.Error != null)
                             throw new Exception(result.Error.Message);
                     }
 
                     var deploymentResult = await templateDeploymentClient.Deployments.BeginCreateOrUpdateAsync(resourceGroup,
-                        deploymentName, deployment);
-                  
+                        deploymentNameTimestamped, deployment);
+
 
                     //foreach (var key in rg.Tags.Keys.Where(k => k.StartsWith("hidden-armdeployment")).ToArray())
                     //{
                     //    rg.Tags.Remove(key);
                     //}
-                    rg.Tags[tagName] = tagValue;
+                    //   rg.Tags[tagName] = tagValue;
+                   
 
                     await templateDeploymentClient.ResourceGroups.CreateOrUpdateAsync(resourceGroup, rg);
 
