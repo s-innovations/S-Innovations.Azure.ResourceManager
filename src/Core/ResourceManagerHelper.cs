@@ -382,16 +382,35 @@ namespace SInnovations.Azure.ResourceManager
                 if (rg.Tags == null)
                     rg.Tags = new Dictionary<string, string>();
 
+                try
+                {
+                    var oldDeployments = await templateDeploymentClient.Deployments.ListAsync(resourceGroup);
+                    var list = new List<DeploymentExtended>(oldDeployments);
+                    while (!string.IsNullOrEmpty(oldDeployments.NextPageLink))
+                    {
+                        oldDeployments = await templateDeploymentClient.Deployments.ListNextAsync(oldDeployments.NextPageLink);
+                        list.AddRange(oldDeployments);
+                    }
+                    list = list.Where(k => k.Name.StartsWith(deploymentName)).OrderByDescending(k => k.Properties.Timestamp).ToList();
 
-                //var oldDeployments = await templateDeploymentClient.Deployments.ListAsync(resourceGroup);
-                //var list =new List<DeploymentExtended>(oldDeployments);
-                //while(!string.IsNullOrEmpty(oldDeployments.NextPageLink))
-                //{
-                //    oldDeployments = await templateDeploymentClient.Deployments.ListNextAsync(oldDeployments.NextPageLink);
-                //    list.AddRange(oldDeployments);
-                //}
+                    if (list.Skip(1).Any())
+                    {
+                        var twoWeeks = DateTimeOffset.Now.AddDays(-14);
+                        foreach(var remove in list.Skip(1).Where(k => k.Properties.Timestamp < twoWeeks))
+                        {
+                            await templateDeploymentClient.Deployments.DeleteAsync(resourceGroup, remove.Name);
+                        }
+                    }
 
-                //    list.First().
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex);
+                }
+               
+
+                
+                
                 var tagName = "hidden-armdeployments";
                 if (rg.Tags.ContainsKey(tagName))
                 {
