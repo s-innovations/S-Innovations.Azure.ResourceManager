@@ -415,8 +415,16 @@ namespace SInnovations.Azure.ResourceManager
                 if (rg.Tags.ContainsKey(tagName))
                 {
                     var deploymentsTags = rg.Tags[tagName].Split(',').ToDictionary(k => k.Split(':').First(), v => string.Join(":", v.Split(':').Skip(1)));
+                    int j = 0;
+                    while(rg.Tags.ContainsKey(tagName + j.ToString()))
+                    {
 
-                    
+                        foreach (var extra in rg.Tags[tagName + j.ToString()].Split(',').ToDictionary(k => k.Split(':').First(), v => string.Join(":", v.Split(':').Skip(1))))
+                            deploymentsTags.Add(extra.Key, extra.Value);
+
+                        j++;
+                    }
+
 
                     if (deploymentsTags.ContainsKey(hash) && (await templateDeploymentClient.Deployments.CheckExistenceAsync(resourceGroup, deploymentsTags[hash]) ?? false))
                     {
@@ -427,9 +435,9 @@ namespace SInnovations.Azure.ResourceManager
                         }
                     }
 
-                    foreach(var key in deploymentsTags.Keys.ToArray())
+                    foreach (var key in deploymentsTags.Keys.ToArray())
                     {
-                        if(deploymentsTags[key] == deploymentName)
+                        if (deploymentsTags[key] == deploymentName)
                         {
                             deploymentsTags.Remove(key);
                         }
@@ -437,7 +445,22 @@ namespace SInnovations.Azure.ResourceManager
                     deploymentsTags.Add(hash, deploymentName);
                     rg.Tags[tagName] = string.Join(",", deploymentsTags.Select(k => $"{k.Key}:{k.Value}"));
 
-                }else
+                    var keys = new Queue<string>(deploymentsTags.Keys);
+
+                   
+
+                    rg.Tags[tagName] = GetUpto256Chars(deploymentsTags, keys).ToString().TrimEnd(',');
+                    int i = 0;
+                    while(keys.Any())
+                    {                       
+                        rg.Tags[tagName+(i++).ToString()] = GetUpto256Chars(deploymentsTags, keys).ToString().TrimEnd(',');
+                    }
+
+
+
+
+                }
+                else
                 {
                     rg.Tags[tagName] = hash + ":" + deploymentName;
                 }
@@ -494,6 +517,18 @@ namespace SInnovations.Azure.ResourceManager
 
             }
 
+        }
+
+        private static StringBuilder GetUpto256Chars(Dictionary<string, string> deploymentsTags, Queue<string> keys)
+        {
+            var sb = new StringBuilder();
+            while ((sb.Length + deploymentsTags[keys.Peek()].Length + keys.Peek().Length + 2) < 256 && keys.Any())
+            {
+                var k = keys.Dequeue();
+                sb.Append($"{k}:{deploymentsTags[k]},");
+            }
+
+            return sb;
         }
     }
 }
