@@ -375,8 +375,8 @@ namespace SInnovations.Azure.ResourceManager
             {
                 templateDeploymentClient.SubscriptionId = credentials.SubscriptionId;
 
-               
 
+                var existingTemplateDeployments = new List<DeploymentExtended>();
 
                 var rg = await templateDeploymentClient.ResourceGroups.GetAsync(resourceGroup);
                 if (rg.Tags == null)
@@ -385,18 +385,18 @@ namespace SInnovations.Azure.ResourceManager
                 try
                 {
                     var oldDeployments = await templateDeploymentClient.Deployments.ListAsync(resourceGroup);
-                    var list = new List<DeploymentExtended>(oldDeployments);
+                    existingTemplateDeployments.AddRange(oldDeployments);
                     while (!string.IsNullOrEmpty(oldDeployments.NextPageLink))
                     {
                         oldDeployments = await templateDeploymentClient.Deployments.ListNextAsync(oldDeployments.NextPageLink);
-                        list.AddRange(oldDeployments);
+                        existingTemplateDeployments.AddRange(oldDeployments);
                     }
-                    list = list.Where(k => k.Name.StartsWith(deploymentName)).OrderByDescending(k => k.Properties.Timestamp).ToList();
+                    existingTemplateDeployments = existingTemplateDeployments.Where(k => k.Name.StartsWith(deploymentName)).OrderByDescending(k => k.Properties.Timestamp).ToList();
 
-                    if (list.Skip(1).Any())
+                    if (existingTemplateDeployments.Skip(1).Any())
                     {
                         var twoWeeks = DateTimeOffset.Now.AddDays(-14);
-                        foreach(var remove in list.Skip(1).Where(k => k.Properties.Timestamp < twoWeeks))
+                        foreach(var remove in existingTemplateDeployments.Skip(1).Where(k => k.Properties.Timestamp < twoWeeks))
                         {
                             await templateDeploymentClient.Deployments.DeleteAsync(resourceGroup, remove.Name);
                         }
@@ -407,10 +407,11 @@ namespace SInnovations.Azure.ResourceManager
                 {
                     Console.WriteLine(ex);
                 }
-               
 
-                
-                
+                existingTemplateDeployments = existingTemplateDeployments.OrderByDescending(k => k.Properties.Timestamp).ToList();
+
+
+
                 var tagName = "hidden-armdeployments";
                 if (rg.Tags.ContainsKey(tagName))
                 {
@@ -422,13 +423,14 @@ namespace SInnovations.Azure.ResourceManager
                         foreach (var extra in rg.Tags[tagName + j.ToString()].Split(',').ToDictionary(k => k.Split(':').First(), v => string.Join(":", v.Split(':').Skip(1))))
                             deploymentsTags.Add(extra.Key, extra.Value);
 
-                        j++;
+                        rg.Tags.Remove(tagName + j++.ToString());
+                       
                     }
 
 
-                    if (deploymentsTags.ContainsKey(hash) && (await templateDeploymentClient.Deployments.CheckExistenceAsync(resourceGroup, deploymentsTags[hash]) ?? false))
+                    if (deploymentsTags.ContainsKey(hash) && existingTemplateDeployments.Any(d=>d.Name.StartsWith(deploymentsTags[hash]))) //(await templateDeploymentClient.Deployments.CheckExistenceAsync(resourceGroup, deploymentsTags[hash]) ?? false))
                     {
-                        var deploymentResult = await templateDeploymentClient.Deployments.GetAsync(resourceGroup, deploymentsTags[hash]);
+                        var deploymentResult = await templateDeploymentClient.Deployments.GetAsync(resourceGroup, existingTemplateDeployments.First(d => d.Name.StartsWith(deploymentsTags[hash])).Name);
                         if (deploymentResult.Properties.ProvisioningState == "Succeeded")
                         {
                             return deploymentResult;
@@ -443,12 +445,9 @@ namespace SInnovations.Azure.ResourceManager
                         }
                     }
                     deploymentsTags.Add(hash, deploymentName);
-                    rg.Tags[tagName] = string.Join(",", deploymentsTags.Select(k => $"{k.Key}:{k.Value}"));
+                 //   rg.Tags[tagName] = string.Join(",", deploymentsTags.Select(k => $"{k.Key}:{k.Value}"));
 
                     var keys = new Queue<string>(deploymentsTags.Keys);
-
-                   
-
                     rg.Tags[tagName] = GetUpto256Chars(deploymentsTags, keys).ToString().TrimEnd(',');
                     int i = 0;
                     while(keys.Any())
