@@ -10,7 +10,7 @@ namespace SInnovations.Azure.ResourceManager
     {
         public static class Templates
         {
-            public const string TemplatePrefix = "SInnovations.Azure.ResourceManager.Templates.";
+            public const string TemplatePrefix = "S-Innovations.Azure.ResourceManager.Templates.";
             public const string AzureKeyVault = TemplatePrefix + "keyvault.json";
 
             public static class Resources

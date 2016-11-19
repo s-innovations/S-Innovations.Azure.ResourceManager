@@ -15,8 +15,8 @@ namespace SInnovations.Azure.ResourceManager.Tests
 
             var action = new ResourceParamterConstant("secretValue", "[concat('Data Source=tcp:', reference(concat('Microsoft.Sql/servers/', variables('sqlserverName'))).fullyQualifiedDomainName, ',1433;Initial Catalog=', parameters('databaseName'), ';User Id=', parameters('administratorLogin'), '@', variables('sqlserverName'), ';Password=', parameters('administratorLoginPassword'), ';')]");
 
-            var template = new StreamReader(GetType().Assembly.GetManifestResourceStream("SInnovations.Azure.ResourceManager.Tests.Fixtures.secretTest.json")).ReadToEnd();
-            var expected = new StreamReader(GetType().Assembly.GetManifestResourceStream("SInnovations.Azure.ResourceManager.Tests.Fixtures.secretTestExpected.json")).ReadToEnd();
+            var template = new StreamReader(GetType().Assembly.GetManifestResourceStream("S-Innovations.Azure.ResourceManager.Tests.Fixtures.secretTest.json")).ReadToEnd();
+            var expected = new StreamReader(GetType().Assembly.GetManifestResourceStream("S-Innovations.Azure.ResourceManager.Tests.Fixtures.secretTestExpected.json")).ReadToEnd();
 
 
             var obj = JObject.Parse(template);

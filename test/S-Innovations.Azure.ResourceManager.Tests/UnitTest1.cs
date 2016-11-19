@@ -42,7 +42,7 @@ namespace SInnovations.Azure.ResourceManager.Tests
                     }
                 },
                 Constants.Templates.Parameters.ServerFarms,
-                new ResourceSource("SInnovations.Azure.ResourceManager.Tests.paramlist.json", typeof(UnitTest1).Assembly)
+                new ResourceSource("S-Innovations.Azure.ResourceManager.Tests.paramlist.json", typeof(UnitTest1).Assembly)
                );
 
             Console.WriteLine(serverFarms.ToString(Newtonsoft.Json.Formatting.Indented));

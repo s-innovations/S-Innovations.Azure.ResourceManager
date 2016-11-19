@@ -108,12 +108,10 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Core\S-Innovations.Azure.ResourceManager.csproj">
-      <Project>{bbb70d3f-2325-451e-ad78-342cacb254b4}</Project>
-      <Name>S-Innovations.Azure.ResourceManager</Name>
-    </ProjectReference>
+    <Content Include="project.lock.json">
+      <DependentUpon>project.json</DependentUpon>
+    </Content>
+    <Content Include="project.json" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets" Condition="Exists('..\..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" />

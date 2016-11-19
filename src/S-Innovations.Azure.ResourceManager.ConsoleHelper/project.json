@@ -1,0 +1,18 @@
+{
+  "version": "2.0.0-pre",
+  "dependencies": {
+    "S-Innovations.Azure.ResourceManager": "2.0.0-pre",
+    "CommandLineParser":"1.9.71"
+  },
+  "buildOptions": {
+  },
+  "frameworks": {
+    "net452": {
+      "frameworkAssemblies": {
+        "System.Runtime": "",
+        "System.Security": "",
+        "System.Threading.Tasks": ""
+      }
+    }
+  }
+}

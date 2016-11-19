@@ -1,0 +1,19 @@
+{
+  "version": "2.0.0-pre",
+  "dependencies": {
+    "S-Innovations.Azure.ResourceManager": "2.0.0-pre",
+    "Microsoft.Azure.KeyVault": "2.0.4-preview",
+    "ChilkatDnCore": "9.5.0.64"
+  },
+  "buildOptions": {
+  },
+  "frameworks": {
+    "netstandard1.5": {
+
+    },
+    "net452": {
+      "frameworkAssemblies": {
+      }
+    }
+  }
+}

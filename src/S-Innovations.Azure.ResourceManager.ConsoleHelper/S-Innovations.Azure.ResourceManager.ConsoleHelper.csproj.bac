@@ -61,12 +61,10 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Core\S-Innovations.Azure.ResourceManager.csproj">
-      <Project>{bbb70d3f-2325-451e-ad78-342cacb254b4}</Project>
-      <Name>S-Innovations.Azure.ResourceManager</Name>
-    </ProjectReference>
+    <Content Include="project.lock.json">
+      <DependentUpon>project.json</DependentUpon>
+    </Content>
+    <Content Include="project.json" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

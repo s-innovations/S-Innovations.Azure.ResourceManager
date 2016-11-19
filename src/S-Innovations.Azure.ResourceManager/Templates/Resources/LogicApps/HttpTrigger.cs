@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
@@ -14,7 +15,7 @@ namespace SInnovations.Azure.ResourceManager.Templates.Resources.LogicApps
     {
         private string name;
 
-        public HttpTrigger(string name) : base(Constants.Templates.Resources.LogicAppHttpTrigger, typeof(HttpTrigger).Assembly)
+        public HttpTrigger(string name) : base(Constants.Templates.Resources.LogicAppHttpTrigger, typeof(HttpTrigger).GetTypeInfo().Assembly)
         {
             this.name = name;
             this.Add(new JsonPathSetter(name+".inputs.uri", "http://requestb.in/18z7v7w1"));

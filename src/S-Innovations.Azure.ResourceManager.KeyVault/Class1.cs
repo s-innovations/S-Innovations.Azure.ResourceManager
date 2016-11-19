@@ -11,6 +11,18 @@ namespace ResourceManager.KeyVault
 {
     public static class KeyVaultHelper
     {
+#if NET452
+        private static IPlatformParameters GetPlatformParameters()
+        {
+            return new PlatformParameters(PromptBehavior.Auto);
+        }
+
+#else
+        private static IPlatformParameters GetPlatformParameters()
+        {
+            return new PlatformParameters();
+        }
+#endif
 
         public static async Task<Tuple<string, string>> CreateSSHKeyPair(string keyvaultUri, string name)
         {
@@ -19,12 +31,13 @@ namespace ResourceManager.KeyVault
                 //   return Task.FromResult(options.AccessToken);
                 var context = new AuthenticationContext(r, new FileCache());
                 //var result = context.AcquireTokenByRefreshToken(options.RefreshToken,options.CliendId,c);
-                var result = context.AcquireTokenAsync(c, "1950a258-227b-4e31-a9cf-717495945fc2", new Uri("urn:ietf:wg:oauth:2.0:oob"), new PlatformParameters(PromptBehavior.Auto)).GetAwaiter().GetResult();
+                var result = context.AcquireTokenAsync(c, "1950a258-227b-4e31-a9cf-717495945fc2", new Uri("urn:ietf:wg:oauth:2.0:oob"), GetPlatformParameters()).GetAwaiter().GetResult();
                 return Task.FromResult(result.AccessToken);
             });
             var exists = await keyVaultClient.GetSecretsAsync(keyvaultUri);
+           
             string pubKey = "", priKey = "";
-            if (exists.Value == null || !exists.Value.Any(v => v.Identifier.Name == name))
+            if (!exists.Any(v => v.Identifier.Name == name))
             {
                 Chilkat.SshKey key = new Chilkat.SshKey();
 

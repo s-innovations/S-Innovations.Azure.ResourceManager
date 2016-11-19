@@ -12,7 +12,7 @@ namespace SInnovations.Azure.ResourceManager.Templates.Resources
     public class AutoScale : ResourceSource, IAfterLoadActions
     {
       
-        public AutoScale() : base(Constants.Templates.Resources.AutoScale, typeof(AutoScale).Assembly)
+        public AutoScale() : base(Constants.Templates.Resources.AutoScale, typeof(AutoScale).GetTypeInfo().Assembly)
         {
 
         }

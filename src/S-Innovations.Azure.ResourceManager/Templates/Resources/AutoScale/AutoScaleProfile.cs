@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
+using System.Reflection;
 
 namespace SInnovations.Azure.ResourceManager.Templates.Resources
 {
@@ -12,7 +13,7 @@ namespace SInnovations.Azure.ResourceManager.Templates.Resources
     { 
      
 
-        public AutoScaleProfile() : base(Constants.Templates.Resources.AutoScaleProfile, typeof(AutoScale).Assembly)
+        public AutoScaleProfile() : base(Constants.Templates.Resources.AutoScaleProfile, typeof(AutoScale).GetTypeInfo().Assembly)
         {
           
         }

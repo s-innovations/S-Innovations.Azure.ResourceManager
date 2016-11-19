@@ -4,12 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
+using System.Reflection;
 
 namespace SInnovations.Azure.ResourceManager.Templates.Resources
 {
     public class AutoScaleProfileMetricTrigger : ResourceSource, IAfterLoadActions
     {
-        public AutoScaleProfileMetricTrigger() : base(Constants.Templates.Resources.AutoScaleProfileMetricTrigger, typeof(AutoScale).Assembly)
+        
+        public AutoScaleProfileMetricTrigger() : base(Constants.Templates.Resources.AutoScaleProfileMetricTrigger, typeof(AutoScale).GetTypeInfo().Assembly)
         {
 
         }

@@ -52,7 +52,7 @@ namespace SInnovations.Azure.ResourceManager
             else
             {
                 var context = new AuthenticationContext($"https://login.windows.net/{tenant}", new FileCache());
-                var result = context.AcquireTokenAsync("https://management.core.windows.net/", clientId, new Uri(redirectUrl),new PlatformParameters(PromptBehavior.Auto)).GetAwaiter().GetResult();
+                var result = context.AcquireTokenAsync("https://management.core.windows.net/", clientId, new Uri(redirectUrl),GetPlatformParameters()).GetAwaiter().GetResult();
                 if (result == null)
                 {
                     throw new InvalidOperationException("Failed to obtain the JWT token");
@@ -95,10 +95,23 @@ namespace SInnovations.Azure.ResourceManager
             //    var code = "AAABAAAAiL9Kn2Z27UubvWFPbm0gLfmp1ExBQltdN9obd6rGamy-zGUM4_wBv9xKG8Q-XwQl2CpxGEz-N2LYNovZMcylQ1zR_u7XV5TD-aN2yOp1rjC2mJpzAI2AaiezbUOvHKouTgeAvWEDk3QUd_qhGZTWaVkOzYHFawqmPKXshpYQozsRslmvhr49VoVEgJs7eyF7COBennf6A3aVDBGtAijfouJLo1kKhYhalf3bRR1wdbLApj7GKaYb7oy-Q_6mGLry1rcQMNHg5h4gvRPeYqT7jX3FGmUePjj1-TwKsIylvvC4f8f69D4v_Wp11FsI6WLSH95wJAj6FKDG04ixUSoy6AXujJcWMZbv0AOzZ3X-V_EmMFM6InNrebmA_3awMibHNI62EtpOjpgnb4FjyboFplXhcNMOUio1DwwOu7sa0IFm0UVK1KTTCra6V34k9BiQfCR0bZXpG9fn3RqwaaCJZu4NBttP1oXoryrp6YsxbskOqJCTe-_AeiPMgcm-I24rzU_8x9ZKQ-JM5ACFySXQggq_csTcWG-Kj8-JT4VY4xKFOGBCO5czxn_g0bH3UuUf8DniOxZPZ0EEoDaUhxfraTpXVy9p5o4hXyr65Upt5eYy5LxR1Emdc-Mfho92SsEnimqMXexwtopnHqx0z-pr9OCe5vnZZdyWFbHNyhDeM6ADXvnKbTQy2xW3kaUMFWaaLd3-s4jq6_D4Py3Mawtz5iAA";
             //    authContext.AcquireTokenByAuthorizationCode(code, new Uri(redirectUri), new ClientCredential(clientId, secret));
           
-            var token = authContext.AcquireTokenAsync("https://management.core.windows.net/", clientId, new Uri(redirectUri), new PlatformParameters(PromptBehavior.Auto), UserIdentifier.AnyUser).GetAwaiter().GetResult();
+            var token = authContext.AcquireTokenAsync("https://management.core.windows.net/", clientId, new Uri(redirectUri), GetPlatformParameters(), UserIdentifier.AnyUser).GetAwaiter().GetResult();
 
             return token.AccessToken;
         }
+
+#if NET452
+        private static IPlatformParameters GetPlatformParameters()
+        {
+            return new PlatformParameters(PromptBehavior.Auto);
+        }
+
+#else
+        private static IPlatformParameters GetPlatformParameters()
+        {
+            return new PlatformParameters();
+        }
+#endif
 
         public static JObject CreateOutput(string v1, string v2, string v3)
         {
@@ -130,7 +143,7 @@ namespace SInnovations.Azure.ResourceManager
 
         public static Stream Read(string name)
         {
-            return typeof(ResourceManagerHelper).Assembly.GetManifestResourceStream(name);
+            return typeof(ResourceManagerHelper).GetTypeInfo().Assembly.GetManifestResourceStream(name);
         }
         public static Task<string> LoadTemplateAsync(string templatePath, string parameterPath, string variablePath, params string[] parameterNames)
         {
@@ -249,7 +262,6 @@ namespace SInnovations.Azure.ResourceManager
         public async static Task<ResourceGroup[]> ListResourceGroups(string subscriptionId, string token)
         {
             ServiceClientCredentials credential = new TokenCredentials(token);
-            //  var resourceGroup = new ResourceGroup { Location = location, Tags = new Dictionary<string, string> { { "source", "SInnovations.Docker.ResourceManager" } } };
             using (var resourceManagementClient = new ResourceManagementClient(credential))
             {
                 resourceManagementClient.SubscriptionId = subscriptionId;
@@ -260,11 +272,11 @@ namespace SInnovations.Azure.ResourceManager
         public async static Task<ResourceGroup> CreateResourceGroupIfNotExistAsync(string subscriptionId, string token, string resourceGroupName, string location)
         {
             ServiceClientCredentials credential = new TokenCredentials(token);
-            var resourceGroup = new ResourceGroup { Location = location, Tags = new Dictionary<string, string> { { "hidden-source", typeof(ResourceManagerHelper).Assembly.FullName } } };
+            var resourceGroup = new ResourceGroup { Location = location, Tags = new Dictionary<string, string> { { "hidden-source", typeof(ResourceManagerHelper).GetTypeInfo().Assembly.FullName } } };
             using (var resourceManagementClient = new ResourceManagementClient(credential))
             {
                 resourceManagementClient.SubscriptionId = subscriptionId;
-                if (!(await resourceManagementClient.ResourceGroups.CheckExistenceAsync(resourceGroupName) ?? false))
+                if (!(await resourceManagementClient.ResourceGroups.CheckExistenceAsync(resourceGroupName)))
                 {
                     return await resourceManagementClient.ResourceGroups.CreateOrUpdateAsync(resourceGroupName, resourceGroup);
                 }
@@ -312,7 +324,7 @@ namespace SInnovations.Azure.ResourceManager
             using (var templateDeploymentClient = new ResourceManagementClient(new TokenCredentials(credentials.AccessToken)))
             {
                 templateDeploymentClient.SubscriptionId = credentials.SubscriptionId;
-                if (!await templateDeploymentClient.Deployments.CheckExistenceAsync(resourceGroup, deploymentName) ?? false)
+                if (!await templateDeploymentClient.Deployments.CheckExistenceAsync(resourceGroup, deploymentName))
                 {
                     return null;
                 }
@@ -375,8 +387,8 @@ namespace SInnovations.Azure.ResourceManager
             {
                 templateDeploymentClient.SubscriptionId = credentials.SubscriptionId;
 
+               
 
-                var existingTemplateDeployments = new List<DeploymentExtended>();
 
                 var rg = await templateDeploymentClient.ResourceGroups.GetAsync(resourceGroup);
                 if (rg.Tags == null)
@@ -385,18 +397,18 @@ namespace SInnovations.Azure.ResourceManager
                 try
                 {
                     var oldDeployments = await templateDeploymentClient.Deployments.ListAsync(resourceGroup);
-                    existingTemplateDeployments.AddRange(oldDeployments);
+                    var list = new List<DeploymentExtended>(oldDeployments);
                     while (!string.IsNullOrEmpty(oldDeployments.NextPageLink))
                     {
                         oldDeployments = await templateDeploymentClient.Deployments.ListNextAsync(oldDeployments.NextPageLink);
-                        existingTemplateDeployments.AddRange(oldDeployments);
+                        list.AddRange(oldDeployments);
                     }
-                    existingTemplateDeployments = existingTemplateDeployments.Where(k => k.Name.StartsWith(deploymentName)).OrderByDescending(k => k.Properties.Timestamp).ToList();
+                    list = list.Where(k => k.Name.StartsWith(deploymentName)).OrderByDescending(k => k.Properties.Timestamp).ToList();
 
-                    if (existingTemplateDeployments.Skip(1).Any())
+                    if (list.Skip(1).Any())
                     {
                         var twoWeeks = DateTimeOffset.Now.AddDays(-14);
-                        foreach(var remove in existingTemplateDeployments.Skip(1).Where(k => k.Properties.Timestamp < twoWeeks))
+                        foreach(var remove in list.Skip(1).Where(k => k.Properties.Timestamp < twoWeeks))
                         {
                             await templateDeploymentClient.Deployments.DeleteAsync(resourceGroup, remove.Name);
                         }
@@ -407,11 +419,10 @@ namespace SInnovations.Azure.ResourceManager
                 {
                     Console.WriteLine(ex);
                 }
+               
 
-                existingTemplateDeployments = existingTemplateDeployments.OrderByDescending(k => k.Properties.Timestamp).ToList();
-
-
-
+                
+                
                 var tagName = "hidden-armdeployments";
                 if (rg.Tags.ContainsKey(tagName))
                 {
@@ -428,9 +439,9 @@ namespace SInnovations.Azure.ResourceManager
                     }
 
 
-                    if (deploymentsTags.ContainsKey(hash) && existingTemplateDeployments.Any(d=>d.Name.StartsWith(deploymentsTags[hash]))) //(await templateDeploymentClient.Deployments.CheckExistenceAsync(resourceGroup, deploymentsTags[hash]) ?? false))
+                    if (deploymentsTags.ContainsKey(hash) && (await templateDeploymentClient.Deployments.CheckExistenceAsync(resourceGroup, deploymentsTags[hash])))
                     {
-                        var deploymentResult = await templateDeploymentClient.Deployments.GetAsync(resourceGroup, existingTemplateDeployments.First(d => d.Name.StartsWith(deploymentsTags[hash])).Name);
+                        var deploymentResult = await templateDeploymentClient.Deployments.GetAsync(resourceGroup, deploymentsTags[hash]);
                         if (deploymentResult.Properties.ProvisioningState == "Succeeded")
                         {
                             return deploymentResult;
@@ -445,9 +456,12 @@ namespace SInnovations.Azure.ResourceManager
                         }
                     }
                     deploymentsTags.Add(hash, deploymentName);
-                 //   rg.Tags[tagName] = string.Join(",", deploymentsTags.Select(k => $"{k.Key}:{k.Value}"));
+                    rg.Tags[tagName] = string.Join(",", deploymentsTags.Select(k => $"{k.Key}:{k.Value}"));
 
                     var keys = new Queue<string>(deploymentsTags.Keys);
+
+                   
+
                     rg.Tags[tagName] = GetUpto256Chars(deploymentsTags, keys).ToString().TrimEnd(',');
                     int i = 0;
                     while(keys.Any())

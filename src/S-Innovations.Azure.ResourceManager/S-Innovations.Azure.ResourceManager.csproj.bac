@@ -107,6 +107,7 @@
     <EmbeddedResource Include="Templates\Resources\LogicApps\httpTrigger.json" />
     <EmbeddedResource Include="Templates\Resources\KeyVault\accessPolicy.json" />
     <EmbeddedResource Include="Templates\Resources\ServiceBus\servicebus.json" />
+    <None Include="project.json" />
     <None Include="Templates\Resources\Storage\storageAccount.json" />
     <None Include="Templates\Resources\WebApps\WebAppManyFeatures.json" />
   </ItemGroup>

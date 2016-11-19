@@ -1,26 +1,26 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.25123.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "S-Innovations.Azure.ResourceManager", "src\Core\S-Innovations.Azure.ResourceManager.csproj", "{BBB70D3F-2325-451E-AD78-342CACB254B4}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "S-Innovations.Azure.ResourceManager.KeyVault", "src\ResourceManager.KeyVault\S-Innovations.Azure.ResourceManager.KeyVault.csproj", "{F4765296-AED4-4BA8-B8FA-54E910C4F12D}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{15AC31E8-2A20-401C-8479-8E2C37F91C90}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "S-Innovations.Azure.ResourceManager.Tests", "test\S-Innovations.Azure.ResourceManager.Tests\S-Innovations.Azure.ResourceManager.Tests.csproj", "{E3E090D4-8EA0-4F96-A014-DAD6EED5CE91}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "S-Innovations.Azure.ResourceManager.ConsoleHelper", "src\ResourceManager.ConsoleHelper\S-Innovations.Azure.ResourceManager.ConsoleHelper.csproj", "{374BC8AB-D0E0-40B8-AB6D-725122D61859}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{618D4760-3DC4-4BBA-B80F-C84DAF31078D}"
 	ProjectSection(SolutionItems) = preProject
+		global.json = global.json
 		.nuget\NuGet.Config = .nuget\NuGet.Config
-		.nuget\nuget.exe = .nuget\nuget.exe
 		readme.md = readme.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "S-Innovations.Azure.ResourceManager.CryptoHelper", "src\ResourceManager.CryptoHelper\S-Innovations.Azure.ResourceManager.CryptoHelper.csproj", "{BDB956D8-EB62-42A8-937C-EB62DACE143A}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "S-Innovations.Azure.ResourceManager", "src\S-Innovations.Azure.ResourceManager\S-Innovations.Azure.ResourceManager.xproj", "{DFB10A11-22FB-4DA3-A289-A720B497410A}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "S-Innovations.Azure.ResourceManager.ConsoleHelper", "src\S-Innovations.Azure.ResourceManager.ConsoleHelper\S-Innovations.Azure.ResourceManager.ConsoleHelper.xproj", "{8E49E677-A322-4BCB-9AC6-75C929EACB99}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "S-Innovations.Azure.ResourceManager.CryptoHelper", "src\S-Innovations.Azure.ResourceManager.CryptoHelper\S-Innovations.Azure.ResourceManager.CryptoHelper.xproj", "{2D5CE58F-1822-435B-AA41-CEDDA911CA99}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "S-Innovations.Azure.ResourceManager.KeyVault", "src\S-Innovations.Azure.ResourceManager.KeyVault\S-Innovations.Azure.ResourceManager.KeyVault.xproj", "{48F9FFBB-889E-4E64-87F4-6551408D438B}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "S-Innovations.Azure.ResourceManager.Tests", "test\S-Innovations.Azure.ResourceManager.Tests\S-Innovations.Azure.ResourceManager.Tests.xproj", "{3141D89D-FBF3-466F-9447-CB0F7BF75729}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -28,31 +28,31 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{BBB70D3F-2325-451E-AD78-342CACB254B4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BBB70D3F-2325-451E-AD78-342CACB254B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BBB70D3F-2325-451E-AD78-342CACB254B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BBB70D3F-2325-451E-AD78-342CACB254B4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F4765296-AED4-4BA8-B8FA-54E910C4F12D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F4765296-AED4-4BA8-B8FA-54E910C4F12D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F4765296-AED4-4BA8-B8FA-54E910C4F12D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F4765296-AED4-4BA8-B8FA-54E910C4F12D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E3E090D4-8EA0-4F96-A014-DAD6EED5CE91}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E3E090D4-8EA0-4F96-A014-DAD6EED5CE91}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E3E090D4-8EA0-4F96-A014-DAD6EED5CE91}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E3E090D4-8EA0-4F96-A014-DAD6EED5CE91}.Release|Any CPU.Build.0 = Release|Any CPU
-		{374BC8AB-D0E0-40B8-AB6D-725122D61859}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{374BC8AB-D0E0-40B8-AB6D-725122D61859}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{374BC8AB-D0E0-40B8-AB6D-725122D61859}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{374BC8AB-D0E0-40B8-AB6D-725122D61859}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BDB956D8-EB62-42A8-937C-EB62DACE143A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BDB956D8-EB62-42A8-937C-EB62DACE143A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BDB956D8-EB62-42A8-937C-EB62DACE143A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BDB956D8-EB62-42A8-937C-EB62DACE143A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DFB10A11-22FB-4DA3-A289-A720B497410A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DFB10A11-22FB-4DA3-A289-A720B497410A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DFB10A11-22FB-4DA3-A289-A720B497410A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DFB10A11-22FB-4DA3-A289-A720B497410A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8E49E677-A322-4BCB-9AC6-75C929EACB99}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8E49E677-A322-4BCB-9AC6-75C929EACB99}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8E49E677-A322-4BCB-9AC6-75C929EACB99}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8E49E677-A322-4BCB-9AC6-75C929EACB99}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2D5CE58F-1822-435B-AA41-CEDDA911CA99}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2D5CE58F-1822-435B-AA41-CEDDA911CA99}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2D5CE58F-1822-435B-AA41-CEDDA911CA99}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2D5CE58F-1822-435B-AA41-CEDDA911CA99}.Release|Any CPU.Build.0 = Release|Any CPU
+		{48F9FFBB-889E-4E64-87F4-6551408D438B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{48F9FFBB-889E-4E64-87F4-6551408D438B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{48F9FFBB-889E-4E64-87F4-6551408D438B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{48F9FFBB-889E-4E64-87F4-6551408D438B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3141D89D-FBF3-466F-9447-CB0F7BF75729}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3141D89D-FBF3-466F-9447-CB0F7BF75729}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3141D89D-FBF3-466F-9447-CB0F7BF75729}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3141D89D-FBF3-466F-9447-CB0F7BF75729}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{E3E090D4-8EA0-4F96-A014-DAD6EED5CE91} = {15AC31E8-2A20-401C-8479-8E2C37F91C90}
+		{3141D89D-FBF3-466F-9447-CB0F7BF75729} = {15AC31E8-2A20-401C-8479-8E2C37F91C90}
 	EndGlobalSection
 EndGlobal

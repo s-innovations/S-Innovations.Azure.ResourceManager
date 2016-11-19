@@ -19,7 +19,7 @@ Do note that the lirary if for editing templates, it is not the scope to provide
 The ResourceSource class is a representation of a template element. And if one needs a serverfarm template one could include it like the following
 ```
 ResourceSource serverFarm = Constants.Templates.Resources.ServerFarms;
-                            //"SInnovations.Azure.ResourceManager.Templates.Resources.serverfarms.json";
+                            //"S-Innovations.Azure.ResourceManager.Templates.Resources.serverfarms.json";
 ```
 which is possible because of implicit operator, and its seen here that it can be used to load the embeded resources.
 ```
@@ -235,7 +235,7 @@ var serverFarms = await ResourceManagerHelper.CreateTemplateAsync(
         }
     },
     Constants.Templates.Parameters.ServerFarms,
-    new ResourceSource("SInnovations.Azure.ResourceManager.Tests.paramlist.json", typeof(UnitTest1).Assembly)
+    new ResourceSource("S-Innovations.Azure.ResourceManager.Tests.paramlist.json", typeof(UnitTest1).Assembly)
     );
 
 Console.WriteLine(serverFarms.ToString(Newtonsoft.Json.Formatting.Indented));

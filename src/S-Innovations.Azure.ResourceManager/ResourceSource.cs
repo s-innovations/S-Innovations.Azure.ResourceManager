@@ -30,7 +30,7 @@ namespace SInnovations.Azure.ResourceManager
 
         }
         public IEnumerable<ITemplateAction> Actions { get { return _actions; } }
-        public ResourceSource(string path) : this(path,typeof(ResourceSource).Assembly)
+        public ResourceSource(string path) : this(path,typeof(ResourceSource).GetTypeInfo().Assembly)
         {
         }
         public ResourceSource(string path, Assembly assembly)
@@ -62,7 +62,7 @@ namespace SInnovations.Azure.ResourceManager
             return new ResourceSource
             {
                 Path = source,
-                Assembly = typeof(ResourceSource).Assembly
+                Assembly = typeof(ResourceSource).GetTypeInfo().Assembly
             };
         }
 

@@ -1,0 +1,28 @@
+{
+  "version": "2.0.0-pre",
+  
+  "dependencies": {
+    "Microsoft.Azure.Management.ResourceManager": "1.4.0-preview",
+    "Microsoft.IdentityModel.Clients.ActiveDirectory": "3.13.7"
+  },
+  "buildOptions": {
+    "embed": [
+      "Templates/**/*.json"
+    ]
+  },
+  "frameworks": {
+    "net452": {
+      "frameworkAssemblies": {
+        "System.Runtime": "",
+        "System.Security": "",
+        "System.Threading.Tasks": ""
+      }
+    },
+    "netstandard1.5": {
+      "dependencies": {
+        "System.Security.Cryptography.ProtectedData": "4.3.0",
+        "System.Threading.Tasks": "4.3.0"
+      }
+    }
+  }
+}

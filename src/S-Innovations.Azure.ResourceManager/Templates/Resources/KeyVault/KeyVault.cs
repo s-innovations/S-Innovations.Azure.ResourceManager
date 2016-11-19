@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
@@ -10,9 +11,8 @@ namespace SInnovations.Azure.ResourceManager.Templates.Resources
 {
     public class KeyVault : ResourceSource, IAfterLoadActions
     {
-
-
-        public KeyVault() : base(Constants.Templates.Resources.KeyVault, typeof(KeyVault).Assembly)
+        
+        public KeyVault() : base(Constants.Templates.Resources.KeyVault, typeof(KeyVault).GetTypeInfo().Assembly)
         {
 
         }
