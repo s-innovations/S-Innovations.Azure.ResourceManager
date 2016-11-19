@@ -1,9 +1,12 @@
 {
   "version": "2.0.0-pre",
-  
+
   "dependencies": {
     "Microsoft.Azure.Management.ResourceManager": "1.4.0-preview",
     "Microsoft.IdentityModel.Clients.ActiveDirectory": "3.13.7"
+  },
+  "packOptions": {
+    "tags": [ "S-Innovations", "Azure" ],
   },
   "buildOptions": {
     "embed": [
@@ -19,6 +22,10 @@
       }
     },
     "netstandard1.5": {
+      "imports": [
+        "dotnet5.6",
+        "portable-net45+win8"
+      ],
       "dependencies": {
         "System.Security.Cryptography.ProtectedData": "4.3.0",
         "System.Threading.Tasks": "4.3.0"

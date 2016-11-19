@@ -9,6 +9,10 @@
   },
   "frameworks": {
     "netstandard1.5": {
+      "imports": [
+        "dotnet5.6",
+        "portable-net45+win8"
+      ]
 
     },
     "net452": {
