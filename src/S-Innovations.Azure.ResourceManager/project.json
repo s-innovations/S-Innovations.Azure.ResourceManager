@@ -28,8 +28,7 @@
       ],
       "dependencies": {
         "System.Security.Cryptography.ProtectedData": "4.3.0",
-        "System.Threading.Tasks": "4.3.0",
-        "NetStandard.Library": "1.6.1"
+        "System.Threading.Tasks": "4.3.0"
       }
     }
   }
