@@ -13,6 +13,7 @@
     },
     "net452": {
       "frameworkAssemblies": {
+        "System.Threading.Tasks": ""
       }
     }
   }
