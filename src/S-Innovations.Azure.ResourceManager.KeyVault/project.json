@@ -8,13 +8,13 @@
   "buildOptions": {
   },
   "frameworks": {
-    "netstandard1.5": {
-      "imports": [
-        "dotnet5.6",
-        "portable-net45+win8"
-      ]
+    //"netstandard1.5": {
+    //  "imports": [
+    //    "dotnet5.6",
+    //    "portable-net45+win8"
+    //  ]
 
-    },
+    //},
     "net452": {
       "frameworkAssemblies": {
         "System.Threading.Tasks": ""

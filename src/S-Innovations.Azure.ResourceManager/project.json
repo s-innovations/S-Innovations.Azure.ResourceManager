@@ -6,7 +6,7 @@
     "Microsoft.IdentityModel.Clients.ActiveDirectory": "3.13.7"
   },
   "packOptions": {
-    "tags": [ "S-Innovations", "Azure" ],
+    "tags": [ "S-Innovations", "Azure" ]
   },
   "buildOptions": {
     "embed": [
@@ -20,16 +20,16 @@
         "System.Security": "",
         "System.Threading.Tasks": ""
       }
-    },
-    "netstandard1.5": {
-      "imports": [
-        "dotnet5.6",
-        "portable-net45+win8"
-      ],
-      "dependencies": {
-        "System.Security.Cryptography.ProtectedData": "4.3.0",
-        "System.Threading.Tasks": "4.3.0"
-      }
     }
+    //, "netstandard1.5": {
+    //  "imports": [
+    //    "dotnet5.6",
+    //    "portable-net45+win8"
+    //  ],
+    //  "dependencies": {
+    //    "System.Security.Cryptography.ProtectedData": "4.3.0",
+    //    "System.Threading.Tasks": "4.3.0"
+    //  }
+    //}
   }
 }
