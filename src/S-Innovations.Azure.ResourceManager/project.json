@@ -3,7 +3,7 @@
 
   "dependencies": {
     "Microsoft.Azure.Management.ResourceManager": "1.4.0-preview",
-    "Microsoft.IdentityModel.Clients.ActiveDirectory": "3.13.7"
+    "Microsoft.IdentityModel.Clients.ActiveDirectory": "3.13.8"
   },
   "packOptions": {
     "tags": [ "S-Innovations", "Azure" ]
