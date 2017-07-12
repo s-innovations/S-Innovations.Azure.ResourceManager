@@ -1,26 +1,25 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26621.2
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{15AC31E8-2A20-401C-8479-8E2C37F91C90}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{618D4760-3DC4-4BBA-B80F-C84DAF31078D}"
 	ProjectSection(SolutionItems) = preProject
-		global.json = global.json
 		NuGet.Config = NuGet.Config
 		readme.md = readme.md
 	EndProjectSection
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "S-Innovations.Azure.ResourceManager", "src\S-Innovations.Azure.ResourceManager\S-Innovations.Azure.ResourceManager.xproj", "{DFB10A11-22FB-4DA3-A289-A720B497410A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "S-Innovations.Azure.ResourceManager", "src\S-Innovations.Azure.ResourceManager\S-Innovations.Azure.ResourceManager.csproj", "{DFB10A11-22FB-4DA3-A289-A720B497410A}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "S-Innovations.Azure.ResourceManager.ConsoleHelper", "src\S-Innovations.Azure.ResourceManager.ConsoleHelper\S-Innovations.Azure.ResourceManager.ConsoleHelper.xproj", "{8E49E677-A322-4BCB-9AC6-75C929EACB99}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "S-Innovations.Azure.ResourceManager.ConsoleHelper", "src\S-Innovations.Azure.ResourceManager.ConsoleHelper\S-Innovations.Azure.ResourceManager.ConsoleHelper.csproj", "{8E49E677-A322-4BCB-9AC6-75C929EACB99}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "S-Innovations.Azure.ResourceManager.CryptoHelper", "src\S-Innovations.Azure.ResourceManager.CryptoHelper\S-Innovations.Azure.ResourceManager.CryptoHelper.xproj", "{2D5CE58F-1822-435B-AA41-CEDDA911CA99}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "S-Innovations.Azure.ResourceManager.CryptoHelper", "src\S-Innovations.Azure.ResourceManager.CryptoHelper\S-Innovations.Azure.ResourceManager.CryptoHelper.csproj", "{2D5CE58F-1822-435B-AA41-CEDDA911CA99}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "S-Innovations.Azure.ResourceManager.KeyVault", "src\S-Innovations.Azure.ResourceManager.KeyVault\S-Innovations.Azure.ResourceManager.KeyVault.xproj", "{48F9FFBB-889E-4E64-87F4-6551408D438B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "S-Innovations.Azure.ResourceManager.KeyVault", "src\S-Innovations.Azure.ResourceManager.KeyVault\S-Innovations.Azure.ResourceManager.KeyVault.csproj", "{48F9FFBB-889E-4E64-87F4-6551408D438B}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "S-Innovations.Azure.ResourceManager.Tests", "test\S-Innovations.Azure.ResourceManager.Tests\S-Innovations.Azure.ResourceManager.Tests.xproj", "{3141D89D-FBF3-466F-9447-CB0F7BF75729}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "S-Innovations.Azure.ResourceManager.Tests", "test\S-Innovations.Azure.ResourceManager.Tests\S-Innovations.Azure.ResourceManager.Tests.csproj", "{3141D89D-FBF3-466F-9447-CB0F7BF75729}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -54,5 +53,8 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{3141D89D-FBF3-466F-9447-CB0F7BF75729} = {15AC31E8-2A20-401C-8479-8E2C37F91C90}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9EF8DC2E-6476-4510-91B7-758843B95619}
 	EndGlobalSection
 EndGlobal

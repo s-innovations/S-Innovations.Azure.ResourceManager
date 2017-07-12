@@ -72,7 +72,7 @@ namespace SInnovations.Azure.ResourceManager.ConsoleHelper
             foreach (var field in yourListOfFields)
                 CreateProperty(tb, field.Key, field.Value);
 
-            Type objectType = tb.CreateType();
+            Type objectType = tb.CreateTypeInfo();
             return objectType;
         }
 
@@ -80,7 +80,7 @@ namespace SInnovations.Azure.ResourceManager.ConsoleHelper
         {
             var typeSignature = "MyDynamicType";
             var an = new AssemblyName(typeSignature);
-            AssemblyBuilder assemblyBuilder = AppDomain.CurrentDomain.DefineDynamicAssembly(an, AssemblyBuilderAccess.Run);
+            AssemblyBuilder assemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(an, AssemblyBuilderAccess.Run);
             ModuleBuilder moduleBuilder = assemblyBuilder.DefineDynamicModule("MainModule");
             TypeBuilder tb = moduleBuilder.DefineType(typeSignature
                                 , TypeAttributes.Public |
